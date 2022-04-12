@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 
 ## griuped by materiale
-dati = pd.read_csv('/data/metalm/database_opt.txt',sep='\t')
+dati = pd.read_csv('/data/metalm/database.csv',sep=';')
 
 all_prove = ['Speed variabile','Feed variabile', 'DOC variabile']
 
