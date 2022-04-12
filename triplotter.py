@@ -59,4 +59,4 @@ df['CAO_p'] = df.CAO_i*100
 
 trplt(df,'materiale','mat')
 trplt(df,'col','col')
-
+trplt(df,'SK','sk')
