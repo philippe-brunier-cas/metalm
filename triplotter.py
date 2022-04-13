@@ -51,7 +51,7 @@ def trplt(df,mode,savepic):
 
 
 
-path_data = '/data/tabella_ox.txt'
+path_data = '/data/metalm/tabella_ox.txt'
 df = pd.read_csv(path_data, sep = '\t')
 df['AL2O3_p']=df.AL2O3_i*100
 df['SIO2_p'] = df.SIO2_i*100
