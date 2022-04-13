@@ -45,7 +45,7 @@ for prova in all_prove:
     plt.title(prova)
     plt.ylabel('Kn [N/mm2]')
     plt.xlabel(xlab)
-    plt.savefig(prova+'.png')
+    plt.savefig('/data/metalm/output/'+prova+'.png')
 ## MATERIALI con tutte le schede
 
 dati = pd.read_csv('/data/metalm/database.csv',sep=';')
@@ -73,7 +73,7 @@ for mat in materiali:
     plt.ylabel('Kn [N/mm2]')
     plt.legend(loc = 'best')
     plt.title(mat+prova)   
-    plt.savefig(mat+'speed.png')
+    plt.savefig('/data/metalm/output/'+mat+'speed.png')
 
 
 dati = pd.read_csv('/data/metalm/database.csv',sep=';')
@@ -102,7 +102,7 @@ for mat in materiali:
     
     plt.legend(loc = 'best')
     plt.title(mat+prova)     
-    plt.savefig(mat+'feed.png')
+    plt.savefig('/data/metalm/output/'+mat+'feed.png')
 
 dati = pd.read_csv('/data/metalm/database.csv',sep=';')
 
@@ -130,6 +130,6 @@ for mat in materiali:
     
     plt.legend(loc = 'best')
     plt.title(mat+prova)     
-    plt.savefig(mat+'doc.png')
+    plt.savefig('/data/metalm/output/'+mat+'doc.png')
 
 plt.style.use('default')
