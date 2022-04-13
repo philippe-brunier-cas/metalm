@@ -46,7 +46,7 @@ def trplt(df,mode,savepic):
   tax.clear_matplotlib_ticks()
   tax.get_axes().axis('off')
   
-  tax.savefig('%s.png' %savepic)
+  tax.savefig ('/data/metalm/output/%s.png' %savepic)
   plt.style.use('default')
 
 
