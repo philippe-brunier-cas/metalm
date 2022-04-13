@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 plt.style.use('seaborn')
 
-## griuped by materiale
+## grouped by materiale
 dati = pd.read_csv('/data/metalm/database.csv',sep=';')
 
 all_prove = ['Speed variabile','Feed variabile', 'DOC variabile']
@@ -45,9 +45,10 @@ for prova in all_prove:
     plt.title(prova)
     plt.ylabel('Kn [N/mm2]')
     plt.xlabel(xlab)
+    plt.savefig(prova+'.png')
 ## MATERIALI con tutte le schede
 
-dati = pd.read_excel('database.xlsx','opt')
+dati = pd.read_csv('/data/metalm/database.csv',sep=';')
 
 prova = 'Speed variabile'
 
@@ -72,9 +73,10 @@ for mat in materiali:
     plt.ylabel('Kn [N/mm2]')
     plt.legend(loc = 'best')
     plt.title(mat+prova)   
-     
+    plt.savefig(mat+'speed.png')
 
-dati = pd.read_excel('database.xlsx','opt')
+
+dati = pd.read_csv('/data/metalm/database.csv',sep=';')
 
 prova = 'Feed variabile'
 
@@ -100,8 +102,9 @@ for mat in materiali:
     
     plt.legend(loc = 'best')
     plt.title(mat+prova)     
+    plt.savefig(mat+'feed.png')
 
-dati = pd.read_excel('database.xlsx','opt')
+dati = pd.read_csv('/data/metalm/database.csv',sep=';')
 
 prova = 'DOC variabile'
 
@@ -127,6 +130,6 @@ for mat in materiali:
     
     plt.legend(loc = 'best')
     plt.title(mat+prova)     
-
+    plt.savefig(mat+'doc.png')
 
 plt.style.use('default')
