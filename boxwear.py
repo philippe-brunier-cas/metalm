@@ -19,7 +19,7 @@ myplot.set_xlabel('')
 plt.savefig('/data/metalm/output/bwear_mat.png')
 
 #boxplot materiale e scheda
-myplot = df.boxplot(column='time',by=['materiale','sk'],rot=90)
+myplot = df.boxplot(column='time',by=['materiale','sk'],rot=90, fontsize=10, figsize=(10, 10))
 myplot.set_ylabel('tempo limite usura [min]')
 myplot.set_title('')
 myplot.set_xlabel('')
