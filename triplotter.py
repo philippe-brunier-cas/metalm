@@ -9,13 +9,15 @@ def trplt(df,mode,savepic):
   # mode sono le marche o le schede
   # savepic è il nome di com voglio il png
   
+  
+  
   plt.style.use('seaborn')
   scale = 100
   size = 30
   figure, tax = ternary.figure(scale=scale)
   figure.set_size_inches(8, 8)
   
-  colori = ['r','b','g','m','orange','lime','indigo','cyan','navy','k']
+  colori = ['r','b','g','m','orange','lime','indigo', 'cyan','navy','k','sienna', 'purple', 'teal', 'grey', 'maroon', 'gold', 'hotpink', 'coral', 'tan', 'azure']
   i = 0
 
   for tt in list(np.unique(df[mode])):
@@ -23,11 +25,11 @@ def trplt(df,mode,savepic):
     # Plot a few different styles with a legend
     dfii = dfi[dfi.kind == 'D'].reset_index()
     points = dfii[['AL2O3_p','SIO2_p','CAO_p']].values
-    tax.scatter(points, marker='o',s=size,color=colori[i], label=tt+'| D type')
+    tax.scatter(points, marker='o',s=size,c=colori[i], label=tt+'| D type')
   
     dfii = dfi[dfi.kind == 'B-C'].reset_index()
     points = dfii[['AL2O3_p','SIO2_p','CAO_p']].values
-    tax.scatter(points, marker='s',s=size,color=colori[i], label=tt+'| B-C type')
+    tax.scatter(points, marker='s',s=size,c=colori[i], label=tt+'| B-C type')
     
     i += 1
     
@@ -53,6 +55,10 @@ def trplt(df,mode,savepic):
 
 path_data = '/data/metalm/tabella_ox.txt'
 df = pd.read_csv(path_data, sep = '\t')
+
+df['SK'] = df['SK'].astype(str)
+df['col'] = df['col'].astype(str)
+
 df['AL2O3_p']=df.AL2O3_i*100
 df['SIO2_p'] = df.SIO2_i*100
 df['CAO_p'] = df.CAO_i*100
