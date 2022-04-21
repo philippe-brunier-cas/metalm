@@ -33,7 +33,7 @@ def trplt(df,mode,savepic):
     
     i += 1
     
-  tax.legend(bbox_to_anchor=(0, 1), fontsize=12)
+  tax.legend(bbox_to_anchor=(0, 1), fontsize=10)
   tax.set_title("inclusion ternary plot", fontsize=25)
   
   # Set Axis labels and Title
