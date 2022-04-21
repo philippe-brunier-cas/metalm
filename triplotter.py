@@ -33,14 +33,14 @@ def trplt(df,mode,savepic):
     
     i += 1
     
-  tax.legend(bbox_to_anchor=(1, 1))
-  tax.set_title("inclusion ternary plot", fontsize=20)
+  tax.legend(bbox_to_anchor=(0, 1), fontsize=12)
+  tax.set_title("inclusion ternary plot", fontsize=25)
   
   # Set Axis labels and Title
-  fontsize = 12
-  tax.left_axis_label('SiO2 [%wt]', fontsize=fontsize, offset=0.14)
-  tax.right_axis_label('CaO [%wt]', fontsize=fontsize, offset=0.14)
-  tax.bottom_axis_label('Al2O3 [%wt]', fontsize=fontsize, offset=0.14)
+  fontsize = 15
+  tax.left_axis_label('SiO2 [%wt]', fontsize=fontsize, offset=0.1)
+  tax.right_axis_label('CaO [%wt]', fontsize=fontsize, offset=0.1)
+  tax.bottom_axis_label('Al2O3 [%wt]', fontsize=fontsize, offset=0.01)
   
   tax.boundary(linewidth=2.0)
   tax.gridlines(multiple=5, color="blue")
