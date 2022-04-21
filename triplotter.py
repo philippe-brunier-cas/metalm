@@ -15,7 +15,7 @@ def trplt(df,mode,savepic):
   scale = 100
   size = 30
   figure, tax = ternary.figure(scale=scale)
-  figure.set_size_inches(8, 8)
+  figure.set_size_inches(15, 15)
   
   colori = ['r','b','g','m','orange','lime','indigo', 'cyan','navy','k','sienna', 'purple', 'teal', 'grey', 'maroon', 'gold', 'hotpink', 'coral', 'tan', 'azure']
   i = 0
@@ -33,7 +33,7 @@ def trplt(df,mode,savepic):
     
     i += 1
     
-  tax.legend()
+  tax.legend(bbox_to_anchor=(1, 1))
   tax.set_title("inclusion ternary plot", fontsize=20)
   
   # Set Axis labels and Title
@@ -49,6 +49,7 @@ def trplt(df,mode,savepic):
   tax.get_axes().axis('off')
   
   tax.savefig ('/data/metalm/output/%s.png' %savepic)
+  tax.close()
   plt.style.use('default')
 
 
