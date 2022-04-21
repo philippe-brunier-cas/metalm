@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 
 ## grouped by materiale
-dati = pd.read_csv('/data/metalm/database.csv',sep=';')
+dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
 
 all_prove = ['Speed variabile','Feed variabile', 'DOC variabile']
 
