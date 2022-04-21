@@ -48,7 +48,7 @@ for prova in all_prove:
     plt.savefig('/data/metalm/output/'+prova+'.png')
 ## MATERIALI con tutte le schede
 
-dati = pd.read_csv('/data/metalm/database.csv',sep=';')
+dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
 
 prova = 'Speed variabile'
 
@@ -76,7 +76,7 @@ for mat in materiali:
     plt.savefig('/data/metalm/output/'+mat[0:6]+'speed.png')
 
 
-dati = pd.read_csv('/data/metalm/database.csv',sep=';')
+dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
 
 prova = 'Feed variabile'
 
@@ -104,7 +104,7 @@ for mat in materiali:
     plt.title(mat+prova)     
     plt.savefig('/data/metalm/output/'+mat[0:6]+'feed.png')
 
-dati = pd.read_csv('/data/metalm/database.csv',sep=';')
+dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
 
 prova = 'DOC variabile'
 
