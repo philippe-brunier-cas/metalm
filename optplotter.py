@@ -49,7 +49,7 @@ for prova in all_prove:
     plt.savefig('/data/metalm/output/'+prova+'.png')
 ## MATERIALI con tutte le schede
 
-dati = pd.read_csv('/data/metalm/database.csv',sep=';')
+dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
 
 prova = 'Speed variabile'
 
@@ -74,10 +74,10 @@ for mat in materiali:
     plt.ylabel('Kn [N/mm2]')
     plt.legend(loc = 'best')
     plt.title(mat+prova)   
-    plt.savefig('/data/metalm/output/'+mat+'speed.png')
+    plt.savefig('/data/metalm/output/'+mat[0:6]+'speed.png')
 
 
-dati = pd.read_csv('/data/metalm/database.csv',sep=';')
+dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
 
 prova = 'Feed variabile'
 
@@ -103,9 +103,9 @@ for mat in materiali:
     
     plt.legend(loc = 'best')
     plt.title(mat+prova)     
-    plt.savefig('/data/metalm/output/'+mat+'feed.png')
+    plt.savefig('/data/metalm/output/'+mat[0:6]+'feed.png')
 
-dati = pd.read_csv('/data/metalm/database.csv',sep=';')
+dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
 
 prova = 'DOC variabile'
 
@@ -131,6 +131,6 @@ for mat in materiali:
     
     plt.legend(loc = 'best')
     plt.title(mat+prova)     
-    plt.savefig('/data/metalm/output/'+mat+'doc.png')
+    plt.savefig('/data/metalm/output/'+mat[0:6]+'doc.png')
 
 plt.style.use('default')
