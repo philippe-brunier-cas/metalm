@@ -73,7 +73,7 @@ for mat in materiali:
     plt.ylabel('Kn [N/mm2]')
     plt.legend(loc = 'best')
     plt.title(mat+prova)   
-    plt.savefig('/data/metalm/output/'+mat+'speed.png')
+    plt.savefig('/data/metalm/output/'+mat[0:6]+'speed.png')
 
 
 dati = pd.read_csv('/data/metalm/database.csv',sep=';')
@@ -102,7 +102,7 @@ for mat in materiali:
     
     plt.legend(loc = 'best')
     plt.title(mat+prova)     
-    plt.savefig('/data/metalm/output/'+mat+'feed.png')
+    plt.savefig('/data/metalm/output/'+mat[0:6]+'feed.png')
 
 dati = pd.read_csv('/data/metalm/database.csv',sep=';')
 
@@ -130,6 +130,6 @@ for mat in materiali:
     
     plt.legend(loc = 'best')
     plt.title(mat+prova)     
-    plt.savefig('/data/metalm/output/'+mat+'doc.png')
+    plt.savefig('/data/metalm/output/'+mat[0:6]+'doc.png')
 
 plt.style.use('default')
