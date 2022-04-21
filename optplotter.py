@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 
 ## grouped by materiale
-dati = pd.read_csv('/data/metalm/database.csv',sep=';')
+dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
 
 all_prove = ['Speed variabile','Feed variabile', 'DOC variabile']
 
@@ -21,6 +21,7 @@ for prova in all_prove:
     for mat in materiali:
         dfm = dfp[dfp.materiale == mat].reset_index()
         dfg = dfm.groupby('passata').mean()
+        dfe = dfm.groupby('passata').std()
         
         if 'Speed' in prova:
             xx = dfg['speed [m/min]']
@@ -37,7 +38,7 @@ for prova in all_prove:
             xx = range(0,dfg.shape[0])
             xlab = 'sequence'
             
-        err = dfg['std_dev_Fn[%]']/100/2*dfg['Kn [N/mm2]']
+        err = dfe['Kn [N/mm2]']
         plt.plot(xx,dfg['Kn [N/mm2]'],'-v',label=mat)
         plt.fill_between(xx,dfg['Kn [N/mm2]']-err,dfg['Kn [N/mm2]']+err,alpha=0.3)
 
