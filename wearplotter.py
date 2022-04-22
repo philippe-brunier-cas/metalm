@@ -17,7 +17,7 @@ myplot = df.boxplot(column='wear_time',by='materiale')
 myplot.set_ylabel('tempo limite usura [min]')
 myplot.set_title('')
 myplot.set_xlabel('')
-plt.savefig('/data/metalm/output/prove/bwear_mat.png')
+plt.savefig('/data/metalm/output/bwear_mat.png')
 
 #calcolo medie per materiale
 
@@ -57,5 +57,5 @@ myplot = df.boxplot(column='wear_time',by=['materiale','sk'],rot=90, fontsize=10
 myplot.set_ylabel('tempo limite usura [min]')
 myplot.set_title('')
 myplot.set_xlabel('')
-plt.savefig('/data/metalm/output/prove/bwear_sk.png')
+plt.savefig('/data/metalm/output/bwear_sk.png')
 plt.style.use('default')
