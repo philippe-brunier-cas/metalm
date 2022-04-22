@@ -7,6 +7,9 @@ plt.style.use('seaborn')
 ## grouped by materiale
 dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
 
+#togliamo LH dai dati
+dati = dati.drop(dati[dati.materiale=='F304LH\n'].index) 
+
 all_prove = ['Speed variabile','Feed variabile', 'DOC variabile']
 
 materiali = np.unique(dati.materiale)
