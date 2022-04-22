@@ -38,7 +38,7 @@ for prova in all_prove:
             xx = range(0,dfg.shape[0])
             xlab = 'sequence'
             
-        err = dfe['Kn [N/mm2]']
+        err = dfe['Kn [N/mm2]']/2
         plt.plot(xx,dfg['Kn [N/mm2]'],'-v',label=mat)
         plt.fill_between(xx,dfg['Kn [N/mm2]']-err,dfg['Kn [N/mm2]']+err,alpha=0.3)
 
@@ -47,6 +47,8 @@ for prova in all_prove:
     plt.ylabel('Kn [N/mm2]')
     plt.xlabel(xlab)
     plt.savefig('/data/metalm/output/'+prova+'.png')
+    # plt.savefig(prova+'.png')
+
 ## MATERIALI con tutte le schede
 
 dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
@@ -65,9 +67,10 @@ for mat in materiali:
     for scheda in schede:
         df = df0[df0.sk == scheda]
         df2 = df.groupby('passata').mean()
+        df2e = df.groupby('passata').std()
         # print(df2['Fn [N]'])
         plt.plot(df2['speed [m/min]'],df2['Kn [N/mm2]'],'-v',label=scheda)
-        yerr = df2['std_dev_Fn[%]']/100*df2['Fn [N]']/2
+        yerr = df2e['Kn [N/mm2]']/2
         plt.fill_between(df2['speed [m/min]'],df2['Kn [N/mm2]']-yerr,df2['Kn [N/mm2]']+yerr,alpha=0.3)
 
     plt.xlabel('speed [m/min]')
@@ -75,7 +78,7 @@ for mat in materiali:
     plt.legend(loc = 'best')
     plt.title(mat+prova)   
     plt.savefig('/data/metalm/output/'+mat[0:6]+'speed.png')
-
+    # plt.savefig(mat[0:6]+'speed.png')
 
 dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
 
@@ -93,9 +96,11 @@ for mat in materiali:
     for scheda in schede:
         df = df0[df0.sk == scheda]
         df2 = df.groupby('passata').mean()
+        df2e = df.groupby('passata').std()
+
         # print(df2['Fn [N]'])
         plt.plot(df2['feed [mm/rev]'],df2['Kn [N/mm2]'],'-v',label=scheda)
-        yerr = df2['std_dev_Fn[%]']/100*df2['Kn [N/mm2]']/2
+        yerr = df2e['Kn [N/mm2]']/2
         plt.fill_between(df2['feed [mm/rev]'],df2['Kn [N/mm2]']-yerr,df2['Kn [N/mm2]']+yerr,alpha=0.3)
 
     plt.xlabel('feed [mm/rev]')
@@ -104,7 +109,8 @@ for mat in materiali:
     plt.legend(loc = 'best')
     plt.title(mat+prova)     
     plt.savefig('/data/metalm/output/'+mat[0:6]+'feed.png')
-
+    # plt.savefig(mat[0:6]+'feed.png')
+    
 dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
 
 prova = 'DOC variabile'
@@ -121,9 +127,11 @@ for mat in materiali:
     for scheda in schede:
         df = df0[df0.sk == scheda]
         df2 = df.groupby('passata').mean()
+        df2e = df.groupby('passata').std()
+
         # print(df2['Fn [N]'])
         plt.plot(df2['DOC [mm]'],df2['Kn [N/mm2]'],'-v',label=scheda)
-        yerr = df2['std_dev_Fn[%]']/100*df2['Kn [N/mm2]']/2
+        yerr = df2e['Kn [N/mm2]']/2
         plt.fill_between(df2['DOC [mm]'],df2['Kn [N/mm2]']-yerr,df2['Kn [N/mm2]']+yerr,alpha=0.2)
 
     plt.xlabel('DOC [mm]')
@@ -132,5 +140,6 @@ for mat in materiali:
     plt.legend(loc = 'best')
     plt.title(mat+prova)     
     plt.savefig('/data/metalm/output/'+mat[0:6]+'doc.png')
+    # plt.savefig(mat[0:6]+'doc.png')
 
 plt.style.use('default')
