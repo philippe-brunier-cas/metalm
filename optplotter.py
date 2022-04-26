@@ -147,7 +147,6 @@ for mat in materiali:
 
 plt.style.use('default')
 
-
 '''
 
 # tutte le schede assieme
