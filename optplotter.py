@@ -146,3 +146,42 @@ for mat in materiali:
     # plt.savefig(mat[0:6]+'doc.png')
 
 plt.style.use('default')
+
+
+'''
+
+# tutte le schede assieme
+
+dati = pd.read_csv('/data/metalm/database_opt.csv',sep=';')
+
+prova = 'Speed variabile'
+
+materiali = np.unique(dati.materiale)
+
+df0 = dati[dati.tipo_prova == prova]
+# plt.figure()
+col_materiale = {'F304L1\n':'b','F304LO\n':'g','F304LX\n':'r','F304LH\n':'k'}
+col_materiale = pd.DataFrame.from_dict(col_materiale,orient='index')
+
+
+plt.figure()
+schede = list(np.unique(df0.sk))
+    for scheda in schede:
+        df = df0[df0.sk == scheda].reset_index()
+        marca_i = df.materiale[0]
+        col_i = str(col_materiale[col_materiale.index == marca_i].values[0][0])
+        print(col_i,marca_i,scheda)
+        df2 = df.groupby('passata').mean()
+        df2e = df.groupby('passata').std()
+        plt.plot(df2['speed [m/min]'],df2['Kn [N/mm2]'],col=col_i,'-v')
+        yerr = df2e['Kn [N/mm2]']/2
+        plt.fill_between(df2['speed [m/min]'],df2['Kn [N/mm2]']-yerr,df2['Kn [N/mm2]']+yerr,alpha=0.3)
+
+plt.xlabel('speed [m/min]')
+plt.ylabel('Kn [N/mm2]')
+#plt.legend(loc = 'best')
+plt.title(mat+prova)   
+plt.savefig('/data/metalm/output/prove/'+mat[0:6]+'speed_all.png')
+# plt.savefig(mat[0:6]+'speed.png')
+
+'''
