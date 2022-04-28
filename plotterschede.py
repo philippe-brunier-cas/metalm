@@ -16,9 +16,9 @@ colori_materiali =  pd.DataFrame ([['b'],['g'],['r']],
 
 materiali = np.unique(dati.materiale)
 
-#prove = ['Speed variabile','Feed variabile', 'DOC variabile']
+prove = ['Speed variabile','Feed variabile', 'DOC variabile']
 
-prove = ['speed [m/min]', 'feed [mm/rev]', 'DOC [mm]']
+#prove = ['speed [m/min]', 'feed [mm/rev]', 'DOC [mm]']
 
 schede = np.unique(dati.sk)
 
@@ -38,5 +38,7 @@ for prova in prove:
       medie_sk = df_scheda.groupby('passata').mean()
       sdt_sk = df_scheda.groupby('passata').std()
       
-      plt.plot(medie_sk[prova],medie_sk['Kn [N/mm2]'],'-v',label=scheda,color=colori_materiali[] )
+      
+      
+      plt.plot(medie_sk['prova'],medie_sk['Kn [N/mm2]'],'-v',label=scheda,color=colori_materiali[] )
       
