@@ -38,7 +38,9 @@ for prova in prove:
       medie_sk = df_scheda.groupby('passata').mean()
       sdt_sk = df_scheda.groupby('passata').std()
       
+      listaprova = prova.split()
+      tipoprova = listaprova[0]
       
       
-      plt.plot(medie_sk['prova'],medie_sk['Kn [N/mm2]'],'-v',label=scheda,color=colori_materiali[] )
+      #plt.plot(medie_sk['prova'],medie_sk['Kn [N/mm2]'],'-v',label=scheda,color=colori_materiali[] )
       
