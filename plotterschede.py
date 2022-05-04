@@ -14,17 +14,15 @@ colori_materiali =  pd.DataFrame ([['b'],['g'],['r']],
                     index=['F304L1\n','F304LO\n','F304LX\n'],
                     columns=['colore'])
 
-materiali = np.unique(dati.materiale)
 
 prove = ['Speed variabile','Feed variabile', 'DOC variabile']
 
-#prove = ['speed [m/min]', 'feed [mm/rev]', 'DOC [mm]']
-
-schede = np.unique(dati.sk)
 
 for prova in prove:
   
   df_prova = dati[dati.tipo_prova == prova]
+  
+  materiali = np.unique(df_prova.materiale)
   
   plt.figure()
   
@@ -32,15 +30,28 @@ for prova in prove:
     
     df_materiale = df_prova[df_prova.materiale == materiale]
     
+    schede = np.unique(df_materiale.sk)
+    
     for scheda in schede:
-      print(scheda,materiale,prova)
+      
       df_scheda = df_materiale[df_materiale.sk == scheda]
       medie_sk = df_scheda.groupby('passata').mean()
       sdt_sk = df_scheda.groupby('passata').std()
       
+      colore = str(colori_materiali.loc[materiale,'colore'])
+      
+      
+      '''
       listaprova = prova.split()
-      tipoprova = listaprova[0]
+      tipoprova1 = listaprova[0]
+      tipoprova = tipoprova1.lower()
       
+      prova_col = [col for col in medie_sk.columns if tipoprova in col]
+      '''
       
-      #plt.plot(medie_sk['prova'],medie_sk['Kn [N/mm2]'],'-v',label=scheda,color=colori_materiali[] )
-      
+      plt.plot(medie_sk['Fx [N]'],medie_sk['Kn [N/mm2]'],'-v',label=scheda, color = colore )
+  
+  plt.legend(loc='best')
+  plt.title(prova)
+  plt.ylabel('Kn [N/mm2]')
+  plt.show()
