@@ -40,16 +40,17 @@ for prova in prove:
       
       colore = str(colori_materiali.loc[materiale,'colore'])
       
+      medie_sk.columns = medie_sk.columns.str.lower()
       
-      '''
+      
       listaprova = prova.split()
       tipoprova1 = listaprova[0]
       tipoprova = tipoprova1.lower()
+     
+      prova_col1 = [col for col in medie_sk.columns if tipoprova in col]
+      prova_col = prova_col1[0]
       
-      prova_col = [col for col in medie_sk.columns if tipoprova in col]
-      '''
-      
-      plt.plot(medie_sk['Fx [N]'],medie_sk['Kn [N/mm2]'],'-v',label=scheda, color = colore )
+      plt.plot(medie_sk[prova_col],medie_sk['kn [n/mm2]'],'-v',label=scheda, color = colore )
   
   plt.legend(loc='best')
   plt.title(prova)
