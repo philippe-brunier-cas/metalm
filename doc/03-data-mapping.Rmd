@@ -1,0 +1,72 @@
+---
+title: "Data Mapping "
+subtitle: "metalm"
+author: "philippe.brunier@cogne.com"
+version: 1.0 
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+    css: ./custom.css
+    df_print: paged
+    gallery: no
+    highlight: default
+    html_document: null
+    lightbox: yes
+    number_sections: yes
+    self_contained: yes
+    thumbnails: no
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      error = FALSE,
+                      fig.height = 7,
+                      fig.width = 10,
+                      collapse = TRUE,
+                      cols.print=20)
+rm(list = ls(all.names = TRUE))
+
+require(dplyr)
+require(kableExtra)
+require(readr)
+```
+
+# File
+
+I file utilizati in questo progetto sono riassunti in 3 tabelle principali: **database_opt.csv** con le estrazioni delle prove svolte al tornio. Tale file contiene i dati delle passate, espressi come media e deviazione standard sui tre assi cartesiani, **tabella_ox.txt** con le composizioni delle inclusioni rilevate al SEM, **tool_wear.txt** con i dati di usura. 
+
+## database_opt.csv
+contiene i dati delle prove svolte in officina. Qui vengono registrare le informazioni per ogni passata, per ogni pezzo, per ogni prova.
+
+```{r caricamento_file_opt, include = TRUE}
+header_opt <- read_delim('/data/metalm/header/head_opt.csv', delim=';', col_type=cols())
+```
+
+Il file è composto da `r nrow(header_opt)` colonne, con le seguenti specifiche
+
+```{r plot_tabella_opt, include = TRUE}
+cas_kable(header_opt, caption='optimization')
+```
+
+
+## tabella_ox.txt
+contiene le composizioni delle inclusioni tipiche della marca espresse come frazione. Le inclusioni presenti sono importanti sia in termini di lavorabilità che in termini di processo in quanto correlabili con la fabbricazione AOD. 
+
+
+```{r caricamento_file_met, include = TRUE}
+header_met <- read_delim('/data/metalm/header/head_met.csv', delim=';', col_type=cols())
+```
+
+Il file è composto da `r nrow(header_met)` colonne, con le seguenti specifiche
+
+```{r plot_tabella_met, include = TRUE}
+cas_kable(header_met, caption='metallurgical')
+```
+
+
+## tool_wear.txt
+contiene i dati relativi alle prove di usura. Il tempo limite di contatto è definito come il picco sulla componente tangenziale (z)

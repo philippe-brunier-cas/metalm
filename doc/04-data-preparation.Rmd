@@ -1,0 +1,82 @@
+---
+title: "Data Preparation "
+subtitle: "metalm"
+author: "philippe.brunier@cogne.com"
+version: 1.0 
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+    css: ./custom.css
+    df_print: paged
+    gallery: no
+    highlight: default
+    html_document: null
+    lightbox: yes
+    number_sections: yes
+    self_contained: yes
+    thumbnails: no
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      error = FALSE,
+                      fig.height = 7,
+                      fig.width = 10,
+                      collapse = TRUE,
+                      cols.print=20)
+rm(list = ls(all.names = TRUE))
+
+require(dplyr)
+require(kableExtra)
+require(readr)
+source('~/dev/cas415/R/function.R')
+```
+
+# File
+
+Importiamo il file header.csv
+
+
+```{r asdf}
+header <- read_delim('/data/cas415/header.csv', 
+                     delim=';',
+                     col_type=cols())
+```
+
+Ci siamo dimenticati di mettere i data type
+
+```{r aserty}
+col_type <- paste('_cc',paste(rep('d',69),collapse = ''),sep = '')
+```
+estraiamo i colnames dall'header
+
+```{r qwerty}
+col_name <- header %>% 
+  pull(col_name)
+```
+
+leggiamo i dati 
+
+```{r zerty}
+carmet415M3 <- read_delim('/data/cas415/carmet415M3.txt',
+                          delim = ',',
+                          skip = 1,
+                          col_names = col_name,
+                          col_types = col_type,
+                          n_max = Inf)
+```
+
+contiamo le righe 
+
+```{r serty}
+nrow(carmet415M3)
+```
+
+salva rds 
+```{r xerty}
+write_rds(carmet415M3,'/data/cas415/carmet415M3.rds')
+```
