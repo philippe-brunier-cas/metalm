@@ -5,4 +5,4 @@
 *.Rproj
 doc/*.png
 doc/*.html
-**/__pychache__
+**/__pychache__/
