@@ -24,6 +24,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       message = FALSE,
                       error = FALSE,
+                      python =reticulate::eng_python,
                       fig.height = 7,
                       fig.width = 10,
                       collapse = TRUE,
@@ -33,6 +34,7 @@ rm(list = ls(all.names = TRUE))
 require(dplyr)
 require(kableExtra)
 require(readr)
+require(reticulate)
 source('~/dev/metalm/R/function.R')
 ```
 
@@ -71,3 +73,25 @@ cas_kable(header_met, caption='metallurgical')
 
 ## tool_wear.txt
 contiene i dati relativi alle prove di usura. Il tempo limite di contatto è definito come il picco sulla componente tangenziale (z)
+
+```{r caricamento_file_wear, include = TRUE}
+header_wear <- read_delim('/data/metalm/header/head_wear.csv', delim=';', col_type=cols())
+```
+
+Il file è composto da `r nrow(header_wear)` colonne, con le seguenti specifiche
+
+```{r plot_tabella_wear, include = TRUE}
+cas_kable(header_wear, caption='tool wear')
+```
+
+
+```{python prova, include = TRUE}
+import pandas
+dd = pandas.read_csv('/data/metalm/header/head_met.csv',sep=';')
+nrows = len(dd.columns)
+```
+```{r converting, include = TRUE}
+nrighe <- py$nrows
+```
+
+Il file è composto da `r nrighe` colonne, con le seguenti specifiche
