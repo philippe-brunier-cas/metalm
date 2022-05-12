@@ -33,16 +33,16 @@ rm(list = ls(all.names = TRUE))
 require(dplyr)
 require(kableExtra)
 require(readr)
-source('~/dev/cas415/R/function.R')
+source('~/dev/metalm/R/function.R')
 ```
 
-# File
+# database_opt
 
-Importiamo il file header.csv
+Importiamo il file .csv 
 
 
 ```{r asdf}
-header <- read_delim('/data/cas415/header.csv', 
+header <- read_delim('/data/metalm/header/head_met.csv', 
                      delim=';',
                      col_type=cols())
 ```

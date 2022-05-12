@@ -34,18 +34,25 @@ rm(list = ls(all.names = TRUE))
 
 # Obiettivo
 
-L'obiettivo del progetto consiste nel caratterizzare il materiale nei seguenti termini:
+L'obiettivo del progetto consiste nel caratterizzare la lavorabilità di un materiale nei seguenti termini:
 
-1. usura utensile
+1. ricerca dei parametri ottimali di taglio (output)
 
-1. analisi chimica
+1. usura utensile (output)
 
-1. micropurezza
+1. analisi chimica (input)
 
-1. proprietà meccaniche (trazioni, durezze)
+1. micropurezza (input)
+
+1. proprietà meccaniche (trazioni, durezze) (input)
 
 
 
+## F304L a lavorabilità migliorata
+
+Si tratta di un approccio 'per confronto': due o più materiali vengono confrontati dal punto di vista delle operazioni di sgrossatura.
+
+In particolare, il focus è sulla marca interna **F304L1** 
 
 # Fasi
 

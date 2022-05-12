@@ -44,15 +44,33 @@ Il report contiene il riassunto delle caraterizzazioni in termini di lavorabilit
 
   + micropurezza - DIN 50602
   
+  + micropurezza - SEP 1571
+  
   + micropurezza - ASTM E45
   
   + dimensione grano - ASTM E112
 
 + chimiche di prodotto  
 
-+ prove meccaniche 
+  + carbonio e zolfo - ASTM E1019
+  
+  + azoto ed ossigeno - ASTM E1019
+  
+  + spettrometria ad emissione ottica per il resto dell'analisi - ASTM E1086
+
++ prove meccaniche
+
+  + prove a trazione
+  
+  + prove di durezza (Brinnel) - ASTM E10  
 
 + prove di lavorabilità
 
 
-I dati di lavorabilità (forze, usura) sono frutto di misure in laboratorio effettuate su macchina OKUMA
+I dati di lavorabilità (forze, usura) sono frutto di misure in laboratorio effettuate con le seguenti specifiche:
+
++ macchina: OKUMA LB2000EX-II
++ lubrificante: BLASER BLASOCUT2000 universal
++ utensile: SANDVICK DNMG 150608–MR 2035
++ dinamometro: KISTLER 9129AA
++ amplificatore: KISTLER 5167A81DK
