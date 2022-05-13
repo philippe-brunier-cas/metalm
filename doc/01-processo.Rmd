@@ -66,11 +66,19 @@ Il report contiene il riassunto delle caraterizzazioni in termini di lavorabilit
 
 + prove di lavorabilità
 
+  + ricerca dei parametri ottimali 
+  
+  + test di usura utensile
 
-I dati di lavorabilità (forze, usura) sono frutto di misure in laboratorio effettuate con le seguenti specifiche:
+
+Queste ultime sono frutto di misure in laboratorio effettuate con le seguenti specifiche:
 
 + macchina: OKUMA LB2000EX-II
 + lubrificante: BLASER BLASOCUT2000 universal
 + utensile: SANDVICK DNMG 150608–MR 2035
 + dinamometro: KISTLER 9129AA
 + amplificatore: KISTLER 5167A81DK
+
+Per le prove di lavorabilità, gli assi fanno riferimento alla figura
+
+![riferimento assi](/data/metalm/pics/riferimento_assi_tornio.png "direzioni di riferimento")

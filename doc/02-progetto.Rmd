@@ -47,6 +47,7 @@ L'obiettivo del progetto consiste nel caratterizzare la lavorabilità di un mate
 1. proprietà meccaniche (trazioni, durezze) (input)
 
 
+![schema operativo](/data/metalm/pics/schema_protocollo_operativo.png "protocollo di routine")
 
 ## F304L a lavorabilità migliorata
 
