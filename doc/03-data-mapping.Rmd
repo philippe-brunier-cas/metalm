@@ -40,7 +40,7 @@ source('~/dev/metalm/R/function.R')
 
 # File
 
-I file utilizati in questo progetto sono riassunti in 3 tabelle principali: **database_opt.csv** con le estrazioni delle prove svolte al tornio. Tale file contiene i dati delle passate, espressi come media e deviazione standard sui tre assi cartesiani, **tabella_ox.txt** con le composizioni delle inclusioni rilevate al SEM, **tool_wear.txt** con i dati di usura. 
+I file utilizati in questo progetto sono riassunti in 3 tabelle principali: **database_opt.csv** con le estrazioni delle prove svolte al tornio. Tale file contiene i dati delle passate, espressi come media e deviazione standard sui tre assi cartesiani. **tabella_ox.txt** contiene le composizioni delle inclusioni rilevate al SEM, **tool_wear.txt** i dati di usura. Il contenuto metallografico, assieme alle prove meccaniche ed alle chimiche di prodotto, si trova invece in **metallurgical.csv** 
 
 ## database_opt.csv
 contiene i dati delle prove svolte in officina. Qui vengono registrare le informazioni per ogni passata, per ogni pezzo, per ogni prova.
@@ -58,6 +58,8 @@ cas_kable(header_opt, caption='optimization')
 
 ## tabella_ox.txt
 contiene le composizioni delle inclusioni tipiche della marca espresse come frazione. Le inclusioni presenti sono importanti sia in termini di lavorabilità che in termini di processo in quanto correlabili con la fabbricazione AOD. 
+
+## metallurgical.csv
 
 
 ```{r caricamento_file_met, include = TRUE}
