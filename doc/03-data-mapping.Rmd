@@ -60,7 +60,11 @@ cas_kable(header_opt, caption='optimization')
 contiene le composizioni delle inclusioni tipiche della marca espresse come frazione. Le inclusioni presenti sono importanti sia in termini di lavorabilità che in termini di processo in quanto correlabili con la fabbricazione AOD. 
 
 ## metallurgical.csv
+contiene i seguenti dati:
 
++ esiti prove meccaniche: trazione, durezza
++ esiti micropurezza
++ chimiche di prodotto
 
 ```{r caricamento_file_met, include = TRUE}
 header_met <- read_delim('/data/metalm/header/head_met.csv', delim=';', col_type=cols())
