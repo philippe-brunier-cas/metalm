@@ -33,13 +33,22 @@ rm(list = ls(all.names = TRUE))
 require(dplyr)
 require(kableExtra)
 require(readr)
+require(reticulate)
 source('~/dev/metalm/R/function.R')
 ```
 
-# database_opt
+# Composizione del database
 
-Importiamo il file .csv 
+Viene creato un database che racchiude le informazioni riassunte per sk. 
+E' composto come segue:
 
++ tempo limite (usura)
++ forza prima passata (usura)
++ forza di picco (usura)
++ chimiche di prodotto 
++ prove meccaniche (trazioni, durezze)
+
+(la mappatura è coerente con le tabelle precedenti) 
 
 ```{r asdf}
 header <- read_delim('/data/metalm/header/head_met.csv', 
@@ -76,7 +85,7 @@ contiamo le righe
 nrow(carmet415M3)
 ```
 
-salva rds 
+salva come resume.csv 
 ```{r xerty}
 write_rds(carmet415M3,'/data/cas415/carmet415M3.rds')
 ```
