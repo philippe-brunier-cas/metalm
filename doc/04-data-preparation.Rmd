@@ -37,7 +37,7 @@ require(reticulate)
 source('~/dev/metalm/R/function.R')
 ```
 
-# Composizione del database
+# Creazione del database
 
 Viene creato un database che racchiude le informazioni riassunte per sk. 
 E' composto come segue:
@@ -50,42 +50,58 @@ E' composto come segue:
 
 (la mappatura è coerente con le tabelle precedenti) 
 
-```{r asdf}
-header <- read_delim('/data/metalm/header/head_met.csv', 
-                     delim=';',
-                     col_type=cols())
+```{python join dei dati, include = TRUE}
+"""
+import pandas 
+import numpy 
+import py.join_data import JoinData
+
+file_mach = 'database_opt.csv'
+file_ox = 'tabella_ox.txt'
+file_wear = 'tool_wear.txt'
+file_met = 'metallurgical.csv'
+
+
+JoinData(file_mach = '/data/metalm/database_opt.csv',
+  file_ox = '/data/metalm/tabella_ox.txt',
+  file_wear = '/data/metalm/tool_wear.txt',
+  file_met = '/data/metalm/metallurgical.csv',
+  )
+"""
 ```
 
-Ci siamo dimenticati di mettere i data type
+dal file *database_opt.csv* estraiamo:
+
++ i valori delle differenze medie di energia
 
 ```{r aserty}
-col_type <- paste('_cc',paste(rep('d',69),collapse = ''),sep = '')
+
 ```
-estraiamo i colnames dall'header
+
++ la tripla ottimale
 
 ```{r qwerty}
-col_name <- header %>% 
-  pull(col_name)
+
 ```
 
-leggiamo i dati 
+
+uniamo queste due informazioni al database precedente
 
 ```{r zerty}
-carmet415M3 <- read_delim('/data/cas415/carmet415M3.txt',
-                          delim = ',',
-                          skip = 1,
-                          col_names = col_name,
-                          col_types = col_type,
-                          n_max = Inf)
+
 ```
 
 contiamo le righe 
 
 ```{r serty}
-nrow(carmet415M3)
+
 ```
 
-salva come resume.csv 
-```{r xerty}
-write_rds(carmet415M3,'/data/cas415/carmet415M3.rds')
+salvo il database come .pkl
+```{python xerty}
+"""
+save as pkl
+print df.head()
+"""
 ```
+
