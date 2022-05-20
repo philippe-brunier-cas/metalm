@@ -17,7 +17,7 @@ def JoinData(file_mach,file_ox,file_wear,file_met):
     # che alcuni df hanno dati ripetuti, faccio un prepocessing
     # raggruppando per SK. sk sarà il mio nuovo indice per i join
     # carico tutto in dfw
-    print('a')
+
     #df_wear
     dfw = df_wear.groupby('sk').mean()
     dfs = df_wear.groupby('sk').std()
@@ -35,8 +35,7 @@ def JoinData(file_mach,file_ox,file_wear,file_met):
     # dfm['metallurcial_count'] = dfc['col']
     
     dfw['dF_perc'] = (dfw.Fmax-dfw.F0)/dfw.F0*100
-    print('b')
-    
+
     #df_met
     dfm = df_met.groupby('SK').mean()
     dfs = df_met.groupby('SK').std()
