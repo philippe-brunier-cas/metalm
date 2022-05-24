@@ -37,10 +37,39 @@ require(ggplot2)
 source('~/dev/metalm/R/function.R')
 ```
 
-leggiamo i dati 
+# esame delle variabili (input VS output)
 
-```{r zerty}
-carmet415M3 <- read_rds('/data/metalm/carmet415M3.rds')
+leggiamo i dati dal file .pkl
+
+```{python loading_dati}
+import pandas as pd
+df <- pd.read_pkl('/data/metalm/.pkl')
+
                        
 ```
 
+# tool wear VS variabili di input
+
+```{python plotting variabili}
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+plt.style.use('seaborn')
+
+output = 'tool_wear'
+
+features = list(df.columns())
+features = features.remove(output)
+
+for ff in features:
+  plt.figure()
+  plt.plot(df[ff],df[output],'-bv')
+  plt.xlabel(ff)
+  plt.ylabel(output)
+  plt.title(ff+' VS '+output)
+  
+  plt.show()
+
+plt.style.use('default')
+```
