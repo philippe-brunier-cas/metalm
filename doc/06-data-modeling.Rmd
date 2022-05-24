@@ -1,0 +1,61 @@
+---
+title: "Data Discovery "
+subtitle: "metalm"
+author: "pbrunier@cogne.com"
+version: 1.0 
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+    css: ./custom.css
+    df_print: paged
+    gallery: no
+    highlight: default
+    html_document: null
+    lightbox: yes
+    number_sections: yes
+    self_contained: yes
+    thumbnails: no
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      error = FALSE,
+                      fig.height = 7,
+                      fig.width = 10,
+                      collapse = TRUE,
+                      cols.print=20)
+rm(list = ls(all.names = TRUE))
+require(dplyr)
+require(rlang)
+require(kableExtra)
+require(readr)
+require(ggplot2)
+source('~/dev/metalm/R/function.R')
+```
+
+# esame delle variabili (input VS output)
+
+leggiamo i dati dal file .pkl
+
+```{python loading_dati}
+import pandas as pd
+#df = pd.read_pkl('/data/metalm/.pkl')
+
+                       
+```
+
+
+# decision tree
+
+
+# correlation matrix 
+
+# regressione lineare
+
+## F0 vs wear_time
+
+## chimica VS wear_time
