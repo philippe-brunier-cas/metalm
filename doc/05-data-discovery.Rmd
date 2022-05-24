@@ -133,6 +133,19 @@ print (dfa)
 
 ```
 
+stampo la tabella
+
+```{r plot_tabella}
+
+tabella <- read_delim('/data/metalm/output/resumed_usura.txt',
+                      delim='|')
+
+cas_kable(tabella, caption='resumed data')
+
+```
+
+
+
 # UVAV
 
 leggiamo i dati
