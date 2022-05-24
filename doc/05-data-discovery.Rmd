@@ -91,7 +91,7 @@ plt.savefig('/data/metalm/output/bwear_sk.png')
 
 ```
 
-##tabella risultati
+## tabella risultati
 
 ```{python tabella_risultati}
 
