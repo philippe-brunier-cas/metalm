@@ -47,8 +47,9 @@ df <- pd.read_pkl('/data/metalm/.pkl')
 
                        
 ```
+NB: non ha senso guardare le variabili in funzione del tempo, perchè si tratta di un progetto di sperimentazione. Non esiste quindi nessuna deriva temporale. 
 
-# tool wear VS variabili di input
+## tool wear VS variabili di input
 
 ```{python plotting variabili}
 
