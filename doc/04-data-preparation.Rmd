@@ -97,11 +97,11 @@ contiamo le righe
 
 ```
 
-salvo il database come .pkl, facciamo un print delle prime righe
-
+salvo il database come .pkl
 ```{python xerty}
 """
 save as pkl
 print df.head()
 """
 ```
+

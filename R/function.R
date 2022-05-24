@@ -3,9 +3,3 @@ cas_kable <- function(data, caption){
   return(tbl)
 }
 
-read_pickle <- function(filename){
-  pd <- import("pandas")
-  pickle_data <- pd$read_pickle(filename)
-  
-  return(pickle_data)
-}
