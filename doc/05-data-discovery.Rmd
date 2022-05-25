@@ -133,7 +133,7 @@ print (dfa)
 
 ```
 
-stampo la tabella
+Tabella riassuntiva delle prove a usura
 
 ```{r plot_tabella}
 
