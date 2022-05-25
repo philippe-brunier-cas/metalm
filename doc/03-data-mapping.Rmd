@@ -68,7 +68,17 @@ cas_kable(header_opt, caption='optimization')
 
 
 ## tabella_ox.txt
-contiene le composizioni delle inclusioni tipiche della marca espresse come frazione. Le inclusioni presenti sono importanti sia in termini di lavorabilità che in termini di processo in quanto correlabili con la fabbricazione AOD. 
+contiene le composizioni delle inclusioni tipiche della marca espresse come frazione. Le inclusioni presenti sono importanti sia in termini di lavorabilità che in termini di processo in quanto correlabili con la fabbricazione AOD.
+
+```{r caricamento_file_ox, include = TRUE}
+header_ox <- read_delim('/data/metalm/header/head_ox.csv', delim=';', col_type=cols())
+```
+
+Il file è composto da `r nrow(header_ox)` colonne, con le seguenti specifiche
+
+```{r plot_tabella_ox, include = TRUE}
+cas_kable(header_ox, caption='oxides')
+```
 
 ## metallurgical.csv
 contiene i seguenti dati:
@@ -111,4 +121,3 @@ nrows = len(dd.columns)
 nrighe <- py$nrows
 ```
 
-Il file è composto da `r nrighe` colonne, con le seguenti specifiche
