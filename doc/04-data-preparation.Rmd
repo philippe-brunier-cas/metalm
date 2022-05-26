@@ -20,7 +20,7 @@ editor_options:
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE,
+knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       message = FALSE,
                       error = FALSE,
@@ -37,7 +37,7 @@ require(reticulate)
 source('~/dev/metalm/R/function.R')
 ```
 
-# Creazione del database
+# Load dei dati
 
 Viene creato un database che racchiude le informazioni riassunte per sk. 
 E' composto come segue:
@@ -50,8 +50,6 @@ E' composto come segue:
 
 (la mappatura è coerente con le tabelle precedenti) 
 
-
-## loading database
 
 carico i file, li mappo e li salvo come pkl
 
@@ -87,7 +85,7 @@ try:
                         skiprows=[0],
                        )
 except ValueError:
-    print('warning!!! --> dizionario non preso')
+    print('warning!!! --> dtype non preso [%s]' %(filepath.split('/')[-1]))
     df_opt = pd.read_csv(filepath,sep='|',
                        names=nomi_colonne,
                         # dtype = dict_types,
@@ -132,7 +130,7 @@ try:
                         skiprows=[0]
                        )
 except ValueError:
-    print('warning!!! --> dizionario non preso')
+    print('warning!!! --> dtype non preso [%s]' %(filepath.split('/')[-1]))
     df_wear = pd.read_csv(filepath,sep='|',
                        names=nomi_colonne,
                         # dtype = dict_types,
@@ -168,7 +166,7 @@ try:
                         skiprows=[0],
                        )
 except ValueError:
-    print('warning!!! --> dizionario non preso')
+    print('warning!!! --> dtype non preso [%s]' %(filepath.split('/')[-1]))
     df_ox = pd.read_csv(filepath,sep='|',
                        names=nomi_colonne,
                         # dtype = dict_types,
@@ -205,7 +203,7 @@ try:
                         skiprows=[0],na_values='na')
                 
 except ValueError:
-    print('warning!!! --> dizionario non preso')
+    print('warning!!! --> dtype non preso [%s]' %(filepath.split('/')[-1]))
     df_ox = pd.read_csv(filepath,sep='|',
                        names=nomi_colonne,
                         # dtype = dict_types,
@@ -222,36 +220,98 @@ df_ox = df_ox.to_pickle('/data/metalm/pickle/met.pkl')
 
 ```
 
-estraggo le informazioni d'interesse per le corelazioni
+# join dei dati
 
-```{python aserty}
+estraggo le informazioni d'interesse per le correlazioni.
+Il drop dei nan non è stato fatto per mantenere la maggior quantità di dati possibile.
+
+Per il momento consideriamo solo:
+
++ database_opt
++ analisi_metallografiche
+
+```{python join dei dati}
+import pandas as pd
+import os
+import numpy as np
+
+df_wear = pd.read_pickle('/data/metalm/pickle/wear.pkl')
+df_met = pd.read_pickle('/data/metalm/pickle/met.pkl')
+
+
+dfw = df_wear.groupby('sk').mean()
+dfs = df_wear.groupby('sk').std()
+dfc = df_wear.groupby('sk').count()
+
+dfw[['std_F0','std_Fmax','std_wear_time']] = dfs[['Fz_iniziale','Fz_peak','tempo_usura']]
+dfw['n_prove'] = dfc['Fz_iniziale']
+
+#df_met
+dfm = df_met.groupby('sk').mean()
+dfs = df_met.groupby('sk').std()
+dfc = df_met.groupby('sk').count()
+
+features = [ 'C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'V',
+       'W', 'Co', 'Ti', 'N2', 'O2 ', 'k2_oa', 'k2_os', 'k2_og',
+       'rm', 'rp02']
+
+dfw[features] = dfm[features]
+
+
+dfw = dfw.reset_index()
+dfw['dF_perc'] = (dfw.Fz_peak-dfw.Fz_iniziale)/dfw.Fz_iniziale*100
+dfw['F_ratio'] = dfw.Fz_peak/dfw.Fz_iniziale
+dfw['dF'] = dfw['F_ratio'] - 1
+
+mat = []
+all_sk = np.unique(df_wear.sk)
+
+for cc in all_sk:
+    mat.append(df_wear[df_wear.sk==cc].materiale.values[0])
+
+dfw['materiale'] = mat
+
+# #reindex per leggere meglio i dati
+
+features = ['sk', 'colata','materiale','n_prove','numero_provini_torniti',
+       'speed', 'feed', 'doc','area','tempo_usura', 'std_wear_time', 
+       'Fz_iniziale','std_dev_Fz', 'Fz_peak','dF_perc', 'F_ratio', 'dF',
+       'C', 'S', 'P', 'Si', 'Mn','Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'V', 'W', 'Co', 'Ti', 'N2', 'O2 ',
+       'k2_oa', 'k2_os', 'k2_og', 
+       'rm', 'rp02',
+       ]
+
+dfw = dfw[features]
+
+#faccio un pò di pulizia 
+new_features =  ['O2' if item == 'O2 ' else item for item in features]
+new_features =  ['area_contatto' if item == 'area' else item for item in features]
+new_features =  ['n_provini' if item == 'numero_provini_torniti' else item for item in features]
+
+
+
+dfw.columns = new_features
+
+# dfw = dfw.dropna()
+dfw = dfw.reset_index()
+dfw = dfw.drop('index',axis=1)
+
+#salvo i dati come csv
+dfw.to_pickle('/data/metalm/pickle/dbmm.pkl')
 
 ```
 
-+ la tripla ottimale
+Stampo le features 
 
-```{r qwerty}
-
-```
-
-
-uniamo queste due informazioni al database precedente
-
-```{r zerty}
+```{python print_info}
+for ff in dfw.columns:
+  print('%s' %ff)
 
 ```
 
-contiamo le righe 
 
-```{r serty}
-
-```
-
-salvo il database come .pkl
-```{python xerty}
-"""
-save as pkl
-print df.head()
-"""
+```{r table}
+tabella <- py$dfw
+cas_kable(tabella, caption='database')
 ```
 
