@@ -38,7 +38,7 @@ source('~/dev/metalm/R/function.R')
 ```
 
 
-```{python import}
+```{python import, include=FALSE}
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.table as tbl
@@ -254,7 +254,7 @@ for prova in all_prove:
     plt.legend(loc = 'best')
     plt.title(mat+'\n'+prova)
     plt.show()
-    plt.savefig('/data/metalm/output/'+mat[0:6]+'speed.png')
+    plt.savefig('/data/metalm/output/'+mat[0:6]+xx+'.png')
   
 
 
