@@ -230,7 +230,7 @@ L1=float(dfa[dfa.materiale=='F304L1'].media_wear)
 dfa['diff_perc1']=((dfa.media_wear-L1)/L1)*100
 
 dfa.to_csv('/data/metalm/output/resumed_usura.txt',sep='|', float_format='%1.2f', index=False)
-print (dfa)
+
 
 ```
 
@@ -281,6 +281,8 @@ for prova in all_prove:
         dfg = dfm.groupby('passata').mean()
         dfe = dfm.groupby('passata').std()
         
+        colore = str(colori_materiali.loc[mat,'colore'])
+        
         if 'Speed' in prova:
             xx = dfg['speed']
             xlab = 'speed [m/min]'
@@ -298,8 +300,8 @@ for prova in all_prove:
             xlab = 'sequence'
             
         err = dfe['Kn']/2
-        plt.plot(xx,dfg['Kn'],'-v',label=mat)
-        plt.fill_between(xx,dfg['Kn']-err,dfg['Kn']+err,alpha=0.3)
+        plt.plot(xx,dfg['Kn'],'-v', label=mat, color = colore)
+        plt.fill_between(xx,dfg['Kn']-err,dfg['Kn']+err,alpha=0.3, color= colore)
 
     plt.legend(loc='best')
     plt.title(prova)
