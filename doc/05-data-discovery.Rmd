@@ -85,6 +85,10 @@ df = df.drop(df[df.materiale=='F304LH'].index)
 
 materiali = np.unique(df.materiale)
 
+array = []
+
+materialilabel = []
+
 i=0
 
 for materiale in materiali:
@@ -93,7 +97,7 @@ for materiale in materiali:
   
   df_materiale = df[df.materiale == materiale]
   
-  print(colore, materiale)
+  #print(colore, materiale)
   
   myplot = df_materiale.boxplot(column='tempo_usura', 
   #patch_artist=True,
@@ -102,15 +106,18 @@ for materiale in materiali:
   positions = [i],
   )
   
+  array.append(i)
+  
+  materialilabel.append(materiale)
   
   i=i+1
   
-  print(i)
+  #print(array)
 
-plt.xticks([0, 1, 2], materiali)
+plt.xticks(array, materialilabel)
 myplot.set_ylabel('tempo limite usura [min]')
 myplot.set_title('')
-myplot.set_xlabel('')
+myplot.set_xlabel('Materiali')
 plt.show()
 plt.savefig('/data/metalm/output/bwear_mat.png')
 plt.close()
@@ -131,14 +138,61 @@ plt.close()
 
 ```{python boxplot_sk}
 
-#boxplot materiale e scheda
+materiali = np.unique(df.materiale)
 
-myplot = df.boxplot(column='tempo_usura',by=['materiale','sk'],rot=90, fontsize=10, figsize=(15, 20))
+array = []
+
+schedelabel = []
+
+i=0
+
+for materiale in materiali:
+  
+  df_materiale = df[df.materiale == materiale]
+  
+  schede = np.unique(df_materiale.sk)
+    
+  for scheda in schede:
+    
+    colore = str(colori_materiali.loc[materiale,'colore'])
+      
+    df_scheda = df_materiale[df_materiale.sk == scheda]
+
+    #print(colore, materiale, scheda)
+    
+    myplot = df_scheda.boxplot(column='tempo_usura', 
+    #patch_artist=True,
+    #notch = True,
+    color = colore,
+    positions = [i],
+    rot=90,
+    )
+    
+    array.append(i)
+    
+    schedelabel.append(scheda)
+    
+    i=i+1
+    
+    #print(array)
+    
+plt.xticks(array, schedelabel)
 myplot.set_ylabel('tempo limite usura [min]')
 myplot.set_title('')
 myplot.set_xlabel('')
 plt.show()
 plt.savefig('/data/metalm/output/bwear_sk.png')
+plt.close()
+
+
+#boxplot materiale e scheda
+
+#myplot = df.boxplot(column='tempo_usura',by=['materiale','sk'],rot=90, fontsize=10, figsize=(15, 20))
+#myplot.set_ylabel('tempo limite usura [min]')
+#myplot.set_title('')
+#myplot.set_xlabel('')
+#plt.show()
+#plt.savefig('/data/metalm/output/bwear_sk.png')
 
 ```
 
