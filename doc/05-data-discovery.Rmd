@@ -49,6 +49,18 @@ plt.style.use('seaborn')
 
 ```
 
+Definisco i colori dei materiali
+
+```{python tabella_colori}
+
+# Creazione dataframe colori materiali
+
+colori_materiali =  pd.DataFrame ([['b'],['g'],['r']],
+                    index=['F304L1','F304LO','F304LX'],
+                    columns=['colore'])
+
+```
+
 # Box plot usura
 
 leggiamo i dati
@@ -71,13 +83,48 @@ df = df.drop(df[df.materiale=='F304LH'].index)
 
 ```{python boxplot_mat}
 
-#boxplot materiale
-myplot = df.boxplot(column='tempo_usura',by='materiale')
+materiali = np.unique(df.materiale)
+
+i=0
+
+for materiale in materiali:
+  
+  colore = str(colori_materiali.loc[materiale,'colore'])
+  
+  df_materiale = df[df.materiale == materiale]
+  
+  print(colore, materiale)
+  
+  myplot = df_materiale.boxplot(column='tempo_usura', 
+  #patch_artist=True,
+  #notch = True,
+  color = colore,
+  positions = [i],
+  )
+  
+  
+  i=i+1
+  
+  print(i)
+
+plt.xticks([0, 1, 2], materiali)
 myplot.set_ylabel('tempo limite usura [min]')
 myplot.set_title('')
 myplot.set_xlabel('')
 plt.show()
 plt.savefig('/data/metalm/output/bwear_mat.png')
+plt.close()
+
+
+#boxplot materiale
+#myplot = df.boxplot(column='tempo_usura',by='materiale', patch_artist=True)
+
+
+#myplot.set_ylabel('tempo limite usura [min]')
+#myplot.set_title('')
+#myplot.set_xlabel('')
+#plt.show()
+#plt.savefig('/data/metalm/output/bwear_mat.png')
 ```
 
 ## Comparativa di tutte le schede analizzate
@@ -263,13 +310,6 @@ for prova in all_prove:
 ## Comparativa tra tutte le schede analizzate
 
 ```{python UVAV_tutte_sk}
-
-# Creazione dataframe colori materiali
-
-colori_materiali =  pd.DataFrame ([['b'],['g'],['r']],
-                    index=['F304L1','F304LO','F304LX'],
-                    columns=['colore'])
-
 
 prove = ['Speed variabile','Feed variabile', 'DOC variabile']
 
