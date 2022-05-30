@@ -29,11 +29,15 @@ knitr::opts_chunk$set(echo = TRUE,
                       collapse = TRUE,
                       cols.print=20)
 rm(list = ls(all.names = TRUE))
+
 require(dplyr)
 require(rlang)
 require(kableExtra)
 require(readr)
 require(ggplot2)
+require(rpart)
+require(reticulate)
+require(rpart.plot)
 source('~/dev/metalm/R/function.R')
 ```
 
@@ -43,19 +47,166 @@ leggiamo i dati dal file .pkl
 
 ```{python loading_dati}
 import pandas as pd
-#df = pd.read_pkl('/data/metalm/.pkl')
+df0 = pd.read_pickle('/data/metalm/pickle/dbmm.pkl')
 
-                       
+features = ['tempo_usura', 'C', 'S', 'P',
+       'Si', 'Mn', 'Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'V', 'W', 'Co', 'Ti', 'N2',
+       'O2 ']
+       
+df = df0[features]
 ```
 
 
 # decision tree
+```{r decision_tree}
+dfr <- py$df
 
+fm <- rpart(formula=tempo_usura ~ .,
+            data = dfr,
+            method = 'anova',
+            cp = 0.02)
+
+rpart.plot(fm,
+           extra=101)
+
+```
 
 # correlation matrix 
+```{python correlaion}
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+
+#import seaborn as sb
+  
+corr = df.corr()
+
+dfcorr = pd.DataFrame()
+dfcorr['correlation'] = corr.tempo_usura
+dfcorr['absolute'] = np.abs(corr.tempo_usura)
+
+dfcorr = dfcorr.sort_values('absolute')
+
+print(dfcorr.correlation[-6:])
+
+#isolo le prime 5 veriabili
+dcorr = dfcorr.iloc[-6:-1,:]
+
+```
+
+```{r plot table}
+tabella <- py$dcorr
+cas_kable(tabella, caption='database')
+```
 
 # regressione lineare
 
-## F0 vs wear_time
+## con solo F0
+```{python linear_model}
 
-## chimica VS wear_time
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+plt.style.use('seaborn')
+
+feature_x = 'Fz_iniziale'
+feature_y = 'tempo_usura'
+
+x = df0[feature_x].values
+y = df0[feature_y].values
+
+# reshape dei dati necessario per il fit
+# perche al momento sono array(L,) e devono diventare array(L,1)
+
+   
+L = len(x)
+x = x.reshape(L,1)
+y = y.reshape(L,1)
+
+model = LinearRegression().fit(x, y)
+r_sq = model.score(x, y)
+print('modello lineare')
+#print(feature_x)
+#print(feature_y)
+# print('y = m*x + q')
+# print('m = %1.3f' %model.slope)
+print('R2: \t %1.2f' %r_sq)
+
+print(model.coef_)
+print(model.intercept_)
+
+plt.figure(figsize=(10,5))
+plt.plot(x,y,'o',label='data')
+
+xn = np.arange(x.min(),x.max(),step=(x.max()-x.min())/100 )
+yn = model.predict(xn.reshape(len(xn),1))
+
+plt.plot(xn,yn,'--',label='fitted line')
+plt.text(x.min(),y.min()+.5,'r2 = %1.2f' %r_sq)
+plt.legend(loc='best')
+plt.title('Linear Model\n%s vs %s' %(feature_x,feature_y))
+plt.xlabel(feature_x)
+plt.ylabel(feature_y)
+plt.show()
+
+plt.style.use('default')
+
+```
+
+## chmica vs tempo usura
+
+```{python multilinear_model}
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+plt.style.use('seaborn')
+
+feature_x = list(dcorr.index)
+feature_y = 'tempo_usura'
+
+x = df[feature_x].values
+y = df[feature_y].values
+
+# reshape dei dati necessario per il fit
+# perche al momento sono array(L,) e devono diventare array(L,1)
+
+model = LinearRegression().fit(x, y)
+r_sq = model.score(x, y)
+print('modello lineare a più variabili')
+print('x = ',feature_x)
+print('y = ' ,feature_y)
+
+# print('y = m*x + q')
+# print('m = %1.3f' %model.slope)
+print('R2: \t %1.2f' %r_sq)
+print('coefficents = ' ,model.coef_)
+print('intercept = ', model.intercept_)
+r,c = x.shape
+
+valori = np.zeros(r)
+for i in range(0,r):
+  for j in range(0,c):
+      valori[i] += np.asarray(df[feature_x[j]])[i]*model.coef_[j]
+  valori[i] += model.intercept_
+  
+xn = np.arange(df[feature_y].min(),df[feature_y].max(),(df[feature_y].max()-df[feature_y].min())/100)
+plt.figure(figsize=(8,6))
+plt.title('fitting goodness\n%s' %feature_y)
+plt.plot(valori,df[feature_y],'v',label='simulated')
+plt.plot(xn,xn,'--',label='perfect fit')
+plt.text(xn.min(),yn.min()+.5,'r2 = %1.2f' %r_sq)
+# for i in range(0,len(valori)):
+#     plt.text(valori[i],df[feature_y][i]+0.05,str(df.sk[i]))
+plt.xlabel('predicted')
+plt.ylabel('real')
+plt.legend(loc='best')
+plt.show()
+
+plt.style.use('default')
+
+    
+```
