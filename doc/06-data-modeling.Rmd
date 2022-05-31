@@ -191,15 +191,16 @@ plt.style.use('default')
 
 ```
 
-## chmica vs tempo usura
+## chmica vs tempo usura - modello1
 
-### con le variabili suggerite 
+in questo modello consideriamo le prime 5 variabili della matrice di correlazione (in valore assoluto)
 
 ```{python multilinear_model}
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
 
 plt.style.use('seaborn')
 
@@ -245,18 +246,92 @@ plt.legend(loc='best')
 plt.show()
 
 plt.style.use('default')
+```
+## chmica vs tempo usura - modello1 con trasformate
 
+logaritmo
+
+```{python model1_transformed}
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
+
+plt.style.use('seaborn')
+
+feature_x = list(dcorr.index)
+feature_y = 'tempo_usura_log'
+df['tempo_usura_log'] = np.log(df.tempo_usura)
+
+x = df[feature_x].values
+y = df[feature_y].values
+
+# reshape dei dati necessario per il fit
+# perche al momento sono array(L,) e devono diventare array(L,1)
+
+model = LinearRegression().fit(x, y)
+r_sq = model.score(x, y)
+print('modello lineare a più variabili')
+print('x = ',feature_x)
+print('y = ' ,feature_y)
+
+# print('y = m*x + q')
+# print('m = %1.3f' %model.slope)
+print('R2: \t %1.2f' %r_sq)
+print('coefficents = ' ,model.coef_)
+print('intercept = ', model.intercept_)
+r,c = x.shape
+
+valori = np.zeros(r)
+for i in range(0,r):
+  for j in range(0,c):
+      valori[i] += np.asarray(df[feature_x[j]])[i]*model.coef_[j]
+  valori[i] += model.intercept_
+  
+xn = np.arange(df[feature_y].min(),df[feature_y].max(),(df[feature_y].max()-df[feature_y].min())/100)
+
+plt.figure(figsize=(8,6))
+plt.title('fitting goodness\n%s' %feature_y)
+plt.plot(valori,df[feature_y],'v',label='simulated')
+plt.plot(xn,xn,'--',label='perfect fit')
+plt.text(xn.min(),yn.min()+.5,'r2 = %1.2f' %r_sq)
+# for i in range(0,len(valori)):
+#     plt.text(valori[i],df[feature_y][i]+0.05,str(df.sk[i]))
+plt.xlabel('predicted')
+plt.ylabel('real')
+plt.legend(loc='best')
+plt.show()
+
+plt.style.use('default')
+
+```
+
+### statistica descrittiva del modello1
+
+```{python stats_transf}
+
+x = df[feature_x].values
+y = df['tempo_usura_log'].values
+
+x = sm.add_constant(x)
+
+model_sm = sm.OLS(y,x)
+results = model_sm.fit()
+print(results.summary())
     
 ```
 
+## chimica VS tempo usura - modello2
 
-### con le variabili 'buon senso'
+in questo modello consideriamo O2 ed altre variabili che **ci sembra** possano avere un influenza 
 
 ```{python multilinear_model2}
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
 
 plt.style.use('seaborn')
 
@@ -302,6 +377,21 @@ plt.legend(loc='best')
 plt.show()
 
 plt.style.use('default')
+```
 
-    
+### statistica descrittiva del modello2
+
+```{python stats2}
+print('x -> ',feature_x)
+print('y ->',feature_y)
+
+x = df0[feature_x].values
+y = df0[feature_y].values
+
+x = sm.add_constant(x)
+
+model_sm = sm.OLS(y,x)
+results = model_sm.fit()
+print(results.summary())
+
 ```
