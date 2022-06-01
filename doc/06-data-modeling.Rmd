@@ -50,12 +50,14 @@ import pandas as pd
 df0 = pd.read_pickle('/data/metalm/pickle/dbmm.pkl')
 
 features0 = ['Fz_iniziale','Fz_peak','dF_perc', 'C', 'S', 'P',
-       'Si', 'Mn', 'Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'V', 'W', 'Co', 'Ti', 'N2','O2 ','k2_oa', 'k2_os', 'k2_og', 'rm', 'rp02']
+       'Si', 'Mn', 'Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'V', 'W', 'Co', 'Ti', 'N2','O2 ','k2_oa', 'k2_os', 'k2_og', 'rm', 'rp02', 'k2_tot']
 
 features = ['tempo_usura', 'C', 'S', 'P',
        'Si', 'Mn', 'Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'V', 'W', 'Co', 'Ti', 'N2','O2 ']
        
 df = df0[features]
+df0['k2_tot'] = df0.k2_oa + df0.k2_os + df0.k2_og
+
 ```
 ## tempo_usura VS variabili risposta
 
