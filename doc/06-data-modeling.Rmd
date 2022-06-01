@@ -47,13 +47,14 @@ leggiamo i dati dal file .pkl
 
 ```{python loading_dati}
 import pandas as pd
+
 df0 = pd.read_pickle('/data/metalm/pickle/dbmm.pkl')
 
-features0 = ['Fz_iniziale','Fz_peak','dF_perc', 'C', 'S', 'P',
-       'Si', 'Mn', 'Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'V', 'W', 'Co', 'Ti', 'N2','O2 ','k2_oa', 'k2_os', 'k2_og', 'rm', 'rp02']
+features0 = ['Fz_iniziale','Fz_peak','dF_perc', 'C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn', 'Al', 'V', 'W', 'Co',
+'Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ','k2_oa', 'k2_os', 'k2_og', 'rm', 'rp02']
 
-features = ['tempo_usura', 'C', 'S', 'P',
-       'Si', 'Mn', 'Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'V', 'W', 'Co', 'Ti', 'N2','O2 ']
+features = ['tempo_usura','C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn', 'Al', 'V', 'W', 'Co',
+'Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ']
        
 df = df0[features]
 ```
@@ -109,12 +110,12 @@ rpart.plot(fm,
 
 # correlation matrix 
 ```{python correlaion}
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+#import './../py/metalm_func' as mm 
 
-#import seaborn as sb
-  
 corr = df.corr()
 
 dfcorr = pd.DataFrame()
@@ -123,10 +124,11 @@ dfcorr['absolute'] = np.abs(corr.tempo_usura)
 
 dfcorr = dfcorr.sort_values('absolute')
 
-print(dfcorr.correlation[-6:])
+print(dfcorr.correlation[-6:-1])
 
-#isolo le prime 5 veriabili
+#isolo le prime n veriabili
 dcorr = dfcorr.iloc[-6:-1,:]
+
 
 ```
 
@@ -216,7 +218,7 @@ y = df[feature_y].values
 model = LinearRegression().fit(x, y)
 r_sq = model.score(x, y)
 print('modello lineare a più variabili')
-print('x = ',feature_x)
+print('x = ' ,feature_x)
 print('y = ' ,feature_y)
 
 # print('y = m*x + q')
@@ -246,6 +248,21 @@ plt.legend(loc='best')
 plt.show()
 
 plt.style.use('default')
+```
+
+### statistica descrittiva del modello1
+
+```{python stats}
+
+x = df[feature_x].values
+y = df['tempo_usura'].values
+
+x = sm.add_constant(x)
+
+model_sm = sm.OLS(y,x)
+results = model_sm.fit()
+print(results.summary())
+    
 ```
 ## chmica vs tempo usura - modello1 con trasformate
 
@@ -320,6 +337,61 @@ model_sm = sm.OLS(y,x)
 results = model_sm.fit()
 print(results.summary())
     
+```
+
+## chimica vs tempo usura - variabili scalate
+
+```{python multilinear_model_scaled}
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
+
+plt.style.use('seaborn')
+
+feature_x = list(dcorr.index)
+feature_y = 'tempo_usura'
+
+x = df[feature_x].values
+y = df[feature_y].values
+
+# reshape dei dati necessario per il fit
+# perche al momento sono array(L,) e devono diventare array(L,1)
+
+model = LinearRegression().fit(x, y)
+r_sq = model.score(x, y)
+print('modello lineare a più variabili')
+print('x = ',feature_x)
+print('y = ' ,feature_y)
+
+# print('y = m*x + q')
+# print('m = %1.3f' %model.slope)
+print('R2: \t %1.2f' %r_sq)
+print('coefficents = ' ,model.coef_)
+print('intercept = ', model.intercept_)
+r,c = x.shape
+
+valori = np.zeros(r)
+for i in range(0,r):
+  for j in range(0,c):
+      valori[i] += np.asarray(df[feature_x[j]])[i]*model.coef_[j]
+  valori[i] += model.intercept_
+  
+xn = np.arange(df[feature_y].min(),df[feature_y].max(),(df[feature_y].max()-df[feature_y].min())/100)
+plt.figure(figsize=(8,6))
+plt.title('fitting goodness\n%s' %feature_y)
+plt.plot(valori,df[feature_y],'v',label='simulated')
+plt.plot(xn,xn,'--',label='perfect fit')
+plt.text(xn.min(),yn.min()+.5,'r2 = %1.2f' %r_sq)
+# for i in range(0,len(valori)):
+#     plt.text(valori[i],df[feature_y][i]+0.05,str(df.sk[i]))
+plt.xlabel('predicted')
+plt.ylabel('real')
+plt.legend(loc='best')
+plt.show()
+
+plt.style.use('default')
 ```
 
 ## chimica VS tempo usura - modello2
