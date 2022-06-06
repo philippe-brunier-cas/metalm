@@ -20,7 +20,7 @@ editor_options:
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE,
                       error = FALSE,
@@ -38,6 +38,7 @@ require(ggplot2)
 require(rpart)
 require(reticulate)
 require(rpart.plot)
+require(tidyr)
 source('~/dev/metalm/R/function.R')
 ```
 
@@ -49,6 +50,7 @@ leggiamo i dati dal file .pkl
 import pandas as pd
 
 df0 = pd.read_pickle('/data/metalm/pickle/dbmm.pkl')
+df0 = df0[df0.materiale != 'F304LH']
 
 features0 = ['Fz_iniziale','Fz_peak','dF_perc', 'C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn', 'Al', 'V', 'W', 'Co',
 'Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ','k2_oa', 'k2_os', 'k2_og', 'rm', 'rp02']
@@ -58,41 +60,7 @@ features = ['tempo_usura','C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn'
        
 df = df0[features]
 ```
-## tempo_usura VS variabili risposta
 
-```{r correlazioni,results='asis'}
-dati <- py$df0
-myfeatures <- py$features0
-
-response <- 'tempo_usura'
-
-vars <- dati %>% 
-  select(myfeatures) %>%
-  names()
-n <- length(vars)
-
-for (i in seq_len(n)) {
-  var_i <- vars[i]
-  pl <- ggplot(dati) +
-    geom_point(aes(!!sym(var_i),!!sym(response))) +
-    geom_smooth(
-      aes(!!sym(var_i),!!sym(response)),
-      color = 'red',
-      se = FALSE,
-      method = 'loess'
-    ) +
-    geom_smooth(
-      aes(!!sym(var_i),!!sym(response)),
-      color = 'green',
-      se = FALSE,
-      method = 'lm'
-    )
-  title <- paste('## Variabile: ', var_i)
-  cat(title, '\n')
-  print(pl)
-  cat('<p>') #necessario per terminare paragrafo
-}
-```
 
 # decision tree
 ```{r decision_tree}
@@ -135,6 +103,17 @@ dcorr = dfcorr.iloc[-6:-1,:]
 ```{r plot table}
 tabella <- py$dcorr
 cas_kable(tabella, caption='database')
+```
+
+# statistica descrittiva generale
+
+```{r summary}
+
+source_python('~/dev/metalm/py/read_pickle_file.py')
+dati_prove <- read_pickle_file('/data/metalm/pickle/dbmm.pkl')
+
+summary(dati_prove)
+
 ```
 
 # regressione lineare
@@ -465,5 +444,96 @@ x = sm.add_constant(x)
 model_sm = sm.OLS(y,x)
 results = model_sm.fit()
 print(results.summary())
+
+```
+
+# regressione non lineare
+
+```{r non_linear_regression}
+
+source_python('~/dev/metalm/py/read_pickle_file.py')
+dati_prove <- read_pickle_file('/data/metalm/pickle/dbmm.pkl')
+
+#modello con interazioni
+
+modello <- lm ( tempo_usura  ~  Si + `O2 ` +
+                  Si*`O2 ` + Si*Si + `O2 `*`O2 `
+                  , data = dati_prove)
+
+print(modello$coefficients)
+cor(dati_prove$tempo_usura,predict(modello))
+
+# plots residui
+par(mfrow = c(2, 2))
+plot(modello)
+par(mfrow = c(1, 1))
+
+
+```
+
+regressione con tempo usura VS variabili suggerite da matrice di correlazione
+
+```{r non_linear_regression2}
+
+source_python('~/dev/metalm/py/read_pickle_file.py')
+dati_prove <- read_pickle_file('/data/metalm/pickle/dbmm.pkl')
+dati_prove$tempo_usura_log <- log(dati_prove$tempo_usura)
+#modello con interazioni
+
+modello <- lm ( tempo_usura  ~ Cr + W + P + Ca + Si + 
+                  Cr*W + Cr*P + Cr*Ca + Cr*Si + 
+                  W*P + W*Ca + W*Si + 
+                  P * Ca + P*Si + Ca*Si
+                  , data = dati_prove)
+
+print(modello$coefficients)
+cor(dati_prove$tempo_usura,predict(modello))
+
+# plots residui
+par(mfrow = c(2, 2))
+plot(modello)
+par(mfrow = c(1, 1))
+
+```
+
+modello con log(tempo_usura)
+
+```{r modello_log}
+dati_prove$tempo_usura_log <- log(dati_prove$tempo_usura)
+modello_log <- lm ( tempo_usura_log  ~ Cr + W + P + Ca + Si + 
+                  Cr*W + Cr*P + Cr*Ca + Cr*Si + 
+                  W*P + W*Ca + W*Si + 
+                  P * Ca + P*Si + Ca*Si
+                  , data = dati_prove)
+
+print(modello_log$coefficients)
+cor(dati_prove$tempo_usura_log,predict(modello_log))
+
+# plots residui
+par(mfrow = c(2, 2))
+plot(modello_log)
+par(mfrow = c(1, 1))
+
+
+```
+
+modello con sqrt(tempo_usura)
+
+```{r modello_sqrt}
+dati_prove$tempo_usura_sqrt <- sqrt(dati_prove$tempo_usura)
+modello_sqrt <- lm ( tempo_usura_sqrt  ~ Cr + W + P + Ca + Si + 
+                  Cr*W + Cr*P + Cr*Ca + Cr*Si + 
+                  W*P + W*Ca + W*Si + 
+                  P * Ca + P*Si + Ca*Si
+                  , data = dati_prove)
+
+print(modello_sqrt$coefficients)
+cor(dati_prove$tempo_usura_sqrt,predict(modello_log))
+
+# plots residui
+par(mfrow = c(2, 2))
+plot(modello_sqrt)
+par(mfrow = c(1, 1))
+
 
 ```

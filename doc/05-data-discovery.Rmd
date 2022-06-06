@@ -20,7 +20,7 @@ editor_options:
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE,
+knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       message = FALSE,
                       error = FALSE,
@@ -34,6 +34,7 @@ require(rlang)
 require(kableExtra)
 require(readr)
 require(ggplot2)
+require(reticulate)
 source('~/dev/metalm/R/function.R')
 ```
 
@@ -591,4 +592,61 @@ trplt(df,'col','col')
 
 trplt(df,'sk','schede')
 
+```
+
+
+# tempo usura VS variabili risposta
+
+## esame delle variabili (input VS output)
+
+leggiamo i dati dal file .pkl
+
+```{python loading_dati}
+import pandas as pd
+
+df0 = pd.read_pickle('/data/metalm/pickle/dbmm.pkl')
+df0 = df0[df0.materiale != 'F304LH']
+
+features0 = ['Fz_iniziale','Fz_peak','dF_perc', 'C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn', 'Al', 'V', 'W', 'Co',
+'Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ','k2_oa', 'k2_os', 'k2_og', 'rm', 'rp02']
+
+features = ['tempo_usura','C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn', 'Al', 'V', 'W', 'Co',
+'Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ']
+       
+df = df0[features]
+```
+## tempo_usura VS variabili risposta
+
+```{r correlazioni,results='asis'}
+dati <- py$df0
+myfeatures <- py$features0
+
+response <- 'tempo_usura'
+
+vars <- dati %>% 
+  select(myfeatures) %>%
+  names()
+n <- length(vars)
+
+for (i in seq_len(n)) {
+  var_i <- vars[i]
+  pl <- ggplot(dati) +
+    geom_point(aes(!!sym(var_i),!!sym(response))) +
+    geom_smooth(
+      aes(!!sym(var_i),!!sym(response)),
+      color = 'red',
+      se = FALSE,
+      method = 'loess'
+    ) +
+    geom_smooth(
+      aes(!!sym(var_i),!!sym(response)),
+      color = 'green',
+      se = FALSE,
+      method = 'lm'
+    )
+  title <- paste('## Variabile: ', var_i)
+  cat(title, '\n')
+  print(pl)
+  cat('<p>') #necessario per terminare paragrafo
+}
 ```
