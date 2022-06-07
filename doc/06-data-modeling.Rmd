@@ -20,7 +20,7 @@ editor_options:
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE,
+knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       message = FALSE,
                       error = FALSE,
@@ -59,6 +59,17 @@ features = ['tempo_usura','C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn'
 'Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ']
        
 df = df0[features]
+```
+
+# statistica descrittiva generale
+
+```{r summary}
+
+source_python('~/dev/metalm/py/read_pickle_file.py')
+dati_prove <- read_pickle_file('/data/metalm/pickle/dbmm.pkl')
+
+summary(dati_prove)
+
 ```
 
 
@@ -105,16 +116,6 @@ tabella <- py$dcorr
 cas_kable(tabella, caption='database')
 ```
 
-# statistica descrittiva generale
-
-```{r summary}
-
-source_python('~/dev/metalm/py/read_pickle_file.py')
-dati_prove <- read_pickle_file('/data/metalm/pickle/dbmm.pkl')
-
-summary(dati_prove)
-
-```
 
 # regressione lineare
 
@@ -317,6 +318,63 @@ results = model_sm.fit()
 print(results.summary())
     
 ```
+# outliers
+
+detection degli outliers con il seguente metodo:
+
++ scalatura dei dati, secondo la fomrula: $x_{scaled} = \frac{x - \tilde{x}}{\sigma_x}$ 
+
+dove:
+
+  + $x_{scaled}$ è la variabile scalata
+
+  + $x$ è la variabile
+
+  + $\tilde{x}$ è la media di x
+
+  + $\sigma_x$ è la varianza
+
++ identificazione per valore assoluto: tutto ciò che cade fuori 2 (95% confidenza) viene considerato outlier
+
+```{python outliers_with_scaling}
+import pandas as pd
+
+df = pd.read_pickle('/data/metalm/pickle/dbmm.pkl')
+# features = ['tempo_usura','C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn', 'Al', 'V', 'W', 'Co','Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ']
+
+# target = features[0]
+features = features[1:]
+
+## creating dataframe scaled
+
+dfs = pd.DataFrame()
+for ff in features:
+    try:
+      media = df[ff].mean()
+      std_dev = df[ff].std()
+    except KeyError:
+      pass
+    
+    
+    dfs[ff] = (df[ff] - media) / std_dev
+
+rs,cs = dfs.shape
+
+# cleaning if abs(value) > n_sigma
+# questo vuol dire non considerare ciò che va oltre i 3 sigma
+n_sigma = 2
+dfo = dfs
+for ff in features:
+    # pos = np.where(dfo[ff] < n_sigma)[0]
+    dfo = dfo[dfo[ff] < n_sigma]
+
+ro,co = dfo.shape
+
+print('dropped %d outliers [%1.2f %s of data]' %((rs-ro),(rs-ro)/rs*100,'%'))
+
+dfoo = df.loc[dfo.index,:]
+dfoo.to_pickle('/data/metalm/pickle/dbmm_scaled.pkl')
+```
 
 ## chimica vs tempo usura - variabili scalate
 
@@ -328,54 +386,31 @@ from sklearn.linear_model import LinearRegression
 import statsmodels.api as sm
 
 plt.style.use('seaborn')
+features = ['tempo_usura', 'C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'Al', 'V', 'W', 'Co', 'Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ']
+df = dfoo[features]
+corr = df.corr()
 
-feature_x = list(dcorr.index)
-feature_y = 'tempo_usura'
+dfcorr = pd.DataFrame()
+dfcorr['correlation'] = corr.tempo_usura
+dfcorr['absolute'] = np.abs(corr.tempo_usura)
 
-x = df[feature_x].values
-y = df[feature_y].values
+dfcorr = dfcorr.sort_values('absolute')
 
-# reshape dei dati necessario per il fit
-# perche al momento sono array(L,) e devono diventare array(L,1)
+print(dfcorr.correlation[-6:-1])
 
-model = LinearRegression().fit(x, y)
-r_sq = model.score(x, y)
-print('modello lineare a più variabili')
-print('x = ',feature_x)
-print('y = ' ,feature_y)
+#isolo le prime n veriabili
+dcorr = dfcorr.iloc[-6:-1,:]
 
-# print('y = m*x + q')
-# print('m = %1.3f' %model.slope)
-print('R2: \t %1.2f' %r_sq)
-print('coefficents = ' ,model.coef_)
-print('intercept = ', model.intercept_)
-r,c = x.shape
-
-valori = np.zeros(r)
-for i in range(0,r):
-  for j in range(0,c):
-      valori[i] += np.asarray(df[feature_x[j]])[i]*model.coef_[j]
-  valori[i] += model.intercept_
-  
-xn = np.arange(df[feature_y].min(),df[feature_y].max(),(df[feature_y].max()-df[feature_y].min())/100)
-plt.figure(figsize=(8,6))
-plt.title('fitting goodness\n%s' %feature_y)
-plt.plot(valori,df[feature_y],'v',label='simulated')
-plt.plot(xn,xn,'--',label='perfect fit')
-plt.text(xn.min(),yn.min()+.5,'r2 = %1.2f' %r_sq)
-# for i in range(0,len(valori)):
-#     plt.text(valori[i],df[feature_y][i]+0.05,str(df.sk[i]))
-plt.xlabel('predicted')
-plt.ylabel('real')
-plt.legend(loc='best')
-plt.show()
-
-plt.style.use('default')
 ```
 
-## chimica VS tempo usura - modello2
+```{r plot table scaled}
+tabella <- py$dcorr
+cas_kable(tabella, caption='database')
+```
 
-in questo modello consideriamo O2 ed altre variabili che **ci sembra** possano avere un influenza 
+## chimica VS tempo usura - modello scalato
+
+in questo modello consideriamo O2 ed altre variabili che sono state identificate dopo la pulizia 
 
 ```{python multilinear_model2}
 import matplotlib.pyplot as plt
@@ -386,7 +421,7 @@ import statsmodels.api as sm
 
 plt.style.use('seaborn')
 
-feature_x = ['Si','O2 ','C','Cr','Cu']
+feature_x = ['Si','O2 ','Ti','Cu','Cr']
 feature_y = 'tempo_usura'
 
 x = df[feature_x].values
@@ -456,8 +491,10 @@ dati_prove <- read_pickle_file('/data/metalm/pickle/dbmm.pkl')
 
 #modello con interazioni
 
-modello <- lm ( tempo_usura  ~  Si + `O2 ` +
-                  Si*`O2 ` + Si*Si + `O2 `*`O2 `
+modello <- lm ( tempo_usura  ~  Si + `O2 ` + Ti + Cu +
+                  Si*Si + Si*`O2 ` + 
+                  `O2 `*`O2 ` + `O2 `*Ti + 
+                  Ti*Ti + Cu*Cu
                   , data = dati_prove)
 
 print(modello$coefficients)
@@ -468,42 +505,21 @@ par(mfrow = c(2, 2))
 plot(modello)
 par(mfrow = c(1, 1))
 
-
+summary(modello)
 ```
 
-regressione con tempo usura VS variabili suggerite da matrice di correlazione
-
-```{r non_linear_regression2}
+```{r non_linear_regression with log}
 
 source_python('~/dev/metalm/py/read_pickle_file.py')
 dati_prove <- read_pickle_file('/data/metalm/pickle/dbmm.pkl')
+
 dati_prove$tempo_usura_log <- log(dati_prove$tempo_usura)
 #modello con interazioni
 
-modello <- lm ( tempo_usura  ~ Cr + W + P + Ca + Si + 
-                  Cr*W + Cr*P + Cr*Ca + Cr*Si + 
-                  W*P + W*Ca + W*Si + 
-                  P * Ca + P*Si + Ca*Si
-                  , data = dati_prove)
-
-print(modello$coefficients)
-cor(dati_prove$tempo_usura,predict(modello))
-
-# plots residui
-par(mfrow = c(2, 2))
-plot(modello)
-par(mfrow = c(1, 1))
-
-```
-
-modello con log(tempo_usura)
-
-```{r modello_log}
-dati_prove$tempo_usura_log <- log(dati_prove$tempo_usura)
-modello_log <- lm ( tempo_usura_log  ~ Cr + W + P + Ca + Si + 
-                  Cr*W + Cr*P + Cr*Ca + Cr*Si + 
-                  W*P + W*Ca + W*Si + 
-                  P * Ca + P*Si + Ca*Si
+modello_log <- lm ( tempo_usura_log  ~  Si + `O2 ` + Ti + Cu +
+                  Si*Si + Si*`O2 ` + 
+                  `O2 `*`O2 ` + `O2 `*Ti + 
+                  Ti*Ti + Cu*Cu
                   , data = dati_prove)
 
 print(modello_log$coefficients)
@@ -514,26 +530,5 @@ par(mfrow = c(2, 2))
 plot(modello_log)
 par(mfrow = c(1, 1))
 
-
-```
-
-modello con sqrt(tempo_usura)
-
-```{r modello_sqrt}
-dati_prove$tempo_usura_sqrt <- sqrt(dati_prove$tempo_usura)
-modello_sqrt <- lm ( tempo_usura_sqrt  ~ Cr + W + P + Ca + Si + 
-                  Cr*W + Cr*P + Cr*Ca + Cr*Si + 
-                  W*P + W*Ca + W*Si + 
-                  P * Ca + P*Si + Ca*Si
-                  , data = dati_prove)
-
-print(modello_sqrt$coefficients)
-cor(dati_prove$tempo_usura_sqrt,predict(modello_log))
-
-# plots residui
-par(mfrow = c(2, 2))
-plot(modello_sqrt)
-par(mfrow = c(1, 1))
-
-
+summary(modello_log)
 ```
