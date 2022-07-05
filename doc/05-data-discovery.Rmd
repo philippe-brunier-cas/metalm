@@ -34,6 +34,7 @@ require(rlang)
 require(kableExtra)
 require(readr)
 require(ggplot2)
+require(reticulate)
 source('~/dev/metalm/R/function.R')
 ```
 
