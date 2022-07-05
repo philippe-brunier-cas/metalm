@@ -1,7 +1,7 @@
 ---
-title: "Data Discovery "
+title: "Comparativa materiali"
 subtitle: "metalm"
-author: "ffiou@cogne.com"
+author: "pbrunier@cogne.com"
 version: 1.0 
 date: "`r Sys.Date()`"
 output:
