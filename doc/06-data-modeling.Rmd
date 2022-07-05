@@ -516,10 +516,8 @@ dati_prove <- read_pickle_file('/data/metalm/pickle/dbmm.pkl')
 dati_prove$tempo_usura_log <- log(dati_prove$tempo_usura)
 #modello con interazioni
 
-modello_log <- lm ( tempo_usura_log  ~  Si + `O2 ` + Ti + Cu +
-                  Si*Si + Si*`O2 ` + 
-                  `O2 `*`O2 ` + `O2 `*Ti + 
-                  Ti*Ti + Cu*Cu
+modello_log <- lm ( tempo_usura_log  ~  Si + `O2 ` + Ti + Cu + Cr +
+                  Si*`O2 ` + `O2 `*Ti + `O2 `*Cr + `O2 `*Cu 
                   , data = dati_prove)
 
 print(modello_log$coefficients)

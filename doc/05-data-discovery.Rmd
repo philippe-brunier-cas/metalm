@@ -650,3 +650,4 @@ for (i in seq_len(n)) {
   cat('<p>') #necessario per terminare paragrafo
 }
 ```
+
