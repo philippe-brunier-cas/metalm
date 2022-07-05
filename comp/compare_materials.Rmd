@@ -54,11 +54,11 @@ dfr <- py$df
 lista_materiali <- unique(dfr$materiale)
 
 inputPanel(
-         selectInput('scegli_marca', label = 'scegli la marca', 
+         selectInput('scegli_marca_1', label = 'scegli la marca 1', 
                       choices = lista_materiali, selected = length(lista_materiali)),
 
-        selectInput('scegli_marca', label = 'scegli la marca', 
-                      choices = lista_materiali, selected = length(lista_materiali))
+        selectInput('scegli_marca_2', label = 'scegli la marca 2', 
+                      choices = lista_materiali, selected = length(lista_materiali),multiple = TRUE)
 )
 
 ```
