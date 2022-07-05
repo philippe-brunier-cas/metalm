@@ -15,9 +15,10 @@ output:
     number_sections: yes
     self_contained: yes
     thumbnails: no
+runtime: shiny
 editor_options:
   chunk_output_type: console
-runtime: shiny
+
 ---
 
 ```{r setup, include = FALSE}
@@ -43,6 +44,22 @@ source('~/dev/metalm/R/function.R')
 import pandas as pd
 
 df = pd.read_pickle('/data/metalm/pickle/dbmm.pkl')
+
+```
+
+```{r shiny_part}
+
+dfr <- py$df
+
+lista_materiali <- unique(dfr$materiale)
+
+inputPanel(
+         selectInput('scegli_marca', label = 'scegli la marca', 
+                      choices = lista_materiali, selected = length(lista_materiali)),
+
+        selectInput('scegli_marca', label = 'scegli la marca', 
+                      choices = lista_materiali, selected = length(lista_materiali))
+)
 
 ```
 
