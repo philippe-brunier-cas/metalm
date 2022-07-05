@@ -38,7 +38,6 @@ require(ggplot2)
 require(rpart)
 require(reticulate)
 require(rpart.plot)
-require(tidyr)
 source('~/dev/metalm/R/function.R')
 ```
 
@@ -48,30 +47,53 @@ leggiamo i dati dal file .pkl
 
 ```{python loading_dati}
 import pandas as pd
-
 df0 = pd.read_pickle('/data/metalm/pickle/dbmm.pkl')
-df0 = df0[df0.materiale != 'F304LH']
 
-features0 = ['Fz_iniziale','Fz_peak','dF_perc', 'C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn', 'Al', 'V', 'W', 'Co',
-'Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ','k2_oa', 'k2_os', 'k2_og', 'rm', 'rp02']
+features0 = ['Fz_iniziale','Fz_peak','dF_perc', 'C', 'S', 'P',
+       'Si', 'Mn', 'Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'V', 'W', 'Co', 'Ti', 'N2','O2 ','k2_oa', 'k2_os', 'k2_og', 'rm', 'rp02', 'k2_tot']
 
-features = ['tempo_usura','C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn', 'Al', 'V', 'W', 'Co',
-'Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ']
+features = ['tempo_usura', 'C', 'S', 'P',
+       'Si', 'Mn', 'Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'V', 'W', 'Co', 'Ti', 'N2','O2 ']
        
 df = df0[features]
-```
-
-# statistica descrittiva generale
-
-```{r summary}
-
-source_python('~/dev/metalm/py/read_pickle_file.py')
-dati_prove <- read_pickle_file('/data/metalm/pickle/dbmm.pkl')
-
-summary(dati_prove)
+df0['k2_tot'] = df0.k2_oa + df0.k2_os + df0.k2_og
 
 ```
+## tempo_usura VS variabili risposta
 
+```{r correlazioni,results='asis'}
+dati <- py$df0
+myfeatures <- py$features0
+
+response <- 'tempo_usura'
+
+vars <- dati %>% 
+  select(myfeatures) %>%
+  names()
+n <- length(vars)
+
+for (i in seq_len(n)) {
+  var_i <- vars[i]
+  pl <- ggplot(dati) +
+    geom_point(aes(!!sym(var_i),!!sym(response))) +
+    geom_smooth(
+      aes(!!sym(var_i),!!sym(response)),
+      color = 'red',
+      se = FALSE,
+      method = 'loess'
+    ) +
+    geom_smooth(
+      aes(!!sym(var_i),!!sym(response)),
+      color = 'green',
+      se = FALSE,
+      method = 'lm'
+    )
+  title <- paste('## Variabile: ', var_i)
+  cat(title, '\n')
+  print(pl)
+  cat('<p>') #necessario per terminare paragrafo
+}
+```
 
 # decision tree
 ```{r decision_tree}
@@ -89,12 +111,12 @@ rpart.plot(fm,
 
 # correlation matrix 
 ```{python correlaion}
-
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-#import './../py/metalm_func' as mm 
 
+#import seaborn as sb
+  
 corr = df.corr()
 
 dfcorr = pd.DataFrame()
@@ -103,11 +125,10 @@ dfcorr['absolute'] = np.abs(corr.tempo_usura)
 
 dfcorr = dfcorr.sort_values('absolute')
 
-print(dfcorr.correlation[-6:-1])
+print(dfcorr.correlation[-6:])
 
-#isolo le prime n veriabili
+#isolo le prime 5 veriabili
 dcorr = dfcorr.iloc[-6:-1,:]
-
 
 ```
 
@@ -115,7 +136,6 @@ dcorr = dfcorr.iloc[-6:-1,:]
 tabella <- py$dcorr
 cas_kable(tabella, caption='database')
 ```
-
 
 # regressione lineare
 
@@ -198,7 +218,7 @@ y = df[feature_y].values
 model = LinearRegression().fit(x, y)
 r_sq = model.score(x, y)
 print('modello lineare a più variabili')
-print('x = ' ,feature_x)
+print('x = ',feature_x)
 print('y = ' ,feature_y)
 
 # print('y = m*x + q')
@@ -228,21 +248,6 @@ plt.legend(loc='best')
 plt.show()
 
 plt.style.use('default')
-```
-
-### statistica descrittiva del modello1
-
-```{python stats}
-
-x = df[feature_x].values
-y = df['tempo_usura'].values
-
-x = sm.add_constant(x)
-
-model_sm = sm.OLS(y,x)
-results = model_sm.fit()
-print(results.summary())
-    
 ```
 ## chmica vs tempo usura - modello1 con trasformate
 
@@ -318,99 +323,10 @@ results = model_sm.fit()
 print(results.summary())
     
 ```
-# outliers
 
-detection degli outliers con il seguente metodo:
+## chimica VS tempo usura - modello2
 
-+ scalatura dei dati, secondo la fomrula: $x_{scaled} = \frac{x - \tilde{x}}{\sigma_x}$ 
-
-dove:
-
-  + $x_{scaled}$ è la variabile scalata
-
-  + $x$ è la variabile
-
-  + $\tilde{x}$ è la media di x
-
-  + $\sigma_x$ è la varianza
-
-+ identificazione per valore assoluto: tutto ciò che cade fuori 2 (95% confidenza) viene considerato outlier
-
-```{python outliers_with_scaling}
-import pandas as pd
-
-df = pd.read_pickle('/data/metalm/pickle/dbmm.pkl')
-# features = ['tempo_usura','C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn', 'Al', 'V', 'W', 'Co','Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ']
-
-# target = features[0]
-features = features[1:]
-
-## creating dataframe scaled
-
-dfs = pd.DataFrame()
-for ff in features:
-    try:
-      media = df[ff].mean()
-      std_dev = df[ff].std()
-    except KeyError:
-      pass
-    
-    
-    dfs[ff] = (df[ff] - media) / std_dev
-
-rs,cs = dfs.shape
-
-# cleaning if abs(value) > n_sigma
-# questo vuol dire non considerare ciò che va oltre i 3 sigma
-n_sigma = 2
-dfo = dfs
-for ff in features:
-    # pos = np.where(dfo[ff] < n_sigma)[0]
-    dfo = dfo[dfo[ff] < n_sigma]
-
-ro,co = dfo.shape
-
-print('dropped %d outliers [%1.2f %s of data]' %((rs-ro),(rs-ro)/rs*100,'%'))
-
-dfoo = df.loc[dfo.index,:]
-dfoo.to_pickle('/data/metalm/pickle/dbmm_scaled.pkl')
-```
-
-## chimica vs tempo usura - variabili scalate
-
-```{python multilinear_model_scaled}
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-from sklearn.linear_model import LinearRegression
-import statsmodels.api as sm
-
-plt.style.use('seaborn')
-features = ['tempo_usura', 'C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'Al', 'V', 'W', 'Co', 'Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ']
-df = dfoo[features]
-corr = df.corr()
-
-dfcorr = pd.DataFrame()
-dfcorr['correlation'] = corr.tempo_usura
-dfcorr['absolute'] = np.abs(corr.tempo_usura)
-
-dfcorr = dfcorr.sort_values('absolute')
-
-print(dfcorr.correlation[-6:-1])
-
-#isolo le prime n veriabili
-dcorr = dfcorr.iloc[-6:-1,:]
-
-```
-
-```{r plot table scaled}
-tabella <- py$dcorr
-cas_kable(tabella, caption='database')
-```
-
-## chimica VS tempo usura - modello scalato
-
-in questo modello consideriamo O2 ed altre variabili che sono state identificate dopo la pulizia 
+in questo modello consideriamo O2 ed altre variabili che **ci sembra** possano avere un influenza 
 
 ```{python multilinear_model2}
 import matplotlib.pyplot as plt
@@ -421,7 +337,7 @@ import statsmodels.api as sm
 
 plt.style.use('seaborn')
 
-feature_x = ['Si','O2 ','Ti','Cu','Cr']
+feature_x = ['Si','O2 ','C','Cr','Cu']
 feature_y = 'tempo_usura'
 
 x = df[feature_x].values
@@ -480,6 +396,7 @@ model_sm = sm.OLS(y,x)
 results = model_sm.fit()
 print(results.summary())
 
+<<<<<<< HEAD
 ```
 
 # regressione non lineare
@@ -530,3 +447,6 @@ par(mfrow = c(1, 1))
 
 summary(modello_log)
 ```
+=======
+```
+>>>>>>> c0c7614afe06bc33538f6d321086f500abd11351

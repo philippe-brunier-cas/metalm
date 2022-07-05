@@ -20,7 +20,7 @@ editor_options:
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       message = FALSE,
                       error = FALSE,
@@ -34,7 +34,6 @@ require(rlang)
 require(kableExtra)
 require(readr)
 require(ggplot2)
-require(reticulate)
 source('~/dev/metalm/R/function.R')
 ```
 
@@ -593,6 +592,7 @@ trplt(df,'col','col')
 trplt(df,'sk','schede')
 
 ```
+<<<<<<< HEAD
 
 
 # tempo usura VS variabili risposta
@@ -651,3 +651,5 @@ for (i in seq_len(n)) {
 }
 ```
 
+=======
+>>>>>>> c0c7614afe06bc33538f6d321086f500abd11351

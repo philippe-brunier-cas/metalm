@@ -251,8 +251,9 @@ dfm = df_met.groupby('sk').mean()
 dfs = df_met.groupby('sk').std()
 dfc = df_met.groupby('sk').count()
 
-features = [ 'C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn', 'Al', 'V', 'W', 'Co',
-'Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ', 'k2_oa', 'k2_os', 'k2_og','rm', 'rp02']
+features = [ 'C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'V',
+       'W', 'Co', 'Ti', 'N2', 'O2 ', 'k2_oa', 'k2_os', 'k2_og',
+       'rm', 'rp02']
 
 dfw[features] = dfm[features]
 
@@ -275,8 +276,7 @@ dfw['materiale'] = mat
 features = ['sk', 'colata','materiale','n_prove','numero_provini_torniti',
        'speed', 'feed', 'doc','area','tempo_usura', 'std_wear_time', 
        'Fz_iniziale','std_dev_Fz', 'Fz_peak','dF_perc', 'F_ratio', 'dF',
-       'C', 'S', 'P', 'Si', 'Mn', 'Cr', 'Ni', 'Mo','Cu', 'Sn', 'Al', 'V', 'W', 'Co',
-'Ti', 'Nb', 'B', 'Ca', 'N2', 'O2 ',
+       'C', 'S', 'P', 'Si', 'Mn','Cr', 'Ni', 'Mo', 'Cu', 'Sn', 'V', 'W', 'Co', 'Ti', 'N2', 'O2 ',
        'k2_oa', 'k2_os', 'k2_og', 
        'rm', 'rp02',
        ]
