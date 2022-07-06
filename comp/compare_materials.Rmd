@@ -54,12 +54,29 @@ dfr <- py$df
 lista_materiali <- unique(dfr$materiale)
 
 inputPanel(
-         selectInput('scegli_marca_1', label = 'scegli la marca 1', 
+         selectInput("marca_1", label = 'scegli la marca 1', 
                       choices = lista_materiali, selected = length(lista_materiali)),
 
-        selectInput('scegli_marca_2', label = 'scegli la marca 2', 
+        selectInput("marca_2", label = 'scegli la marca 2', 
                       choices = lista_materiali, selected = length(lista_materiali),multiple = TRUE)
 )
+
+```
+
+```{r prova_stampa_materiali}
+
+tempo_usura_materiali <- dfr %>% select(materiale, tempo_usura)
+
+#tempo_usura <- dfr$tempo_usura
+
+materiali <- renderPrint({
+  print(ifelse(input$marca_1 == 'F304LO',
+               mean(tempo_usura_materiali$tempo_usura),
+               input$marca_1));
+  input$marca_2
+  })
+
+materiali
 
 ```
 
