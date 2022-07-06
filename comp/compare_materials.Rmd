@@ -67,16 +67,39 @@ inputPanel(
 
 tempo_usura_materiali <- dfr %>% select(materiale, tempo_usura)
 
-#tempo_usura <- dfr$tempo_usura
+tempo_usura_materiali <- tempo_usura_materiali %>% arrange(materiale)
+
+tempo_usura_LO <- subset(tempo_usura_materiali, materiale == 'F304LO')
+tempo_usura_L1 <- subset(tempo_usura_materiali, materiale == 'F304L1')
+tempo_usura_LX <- subset(tempo_usura_materiali, materiale == 'F304LX')
+tempo_usura_LH <- subset(tempo_usura_materiali, materiale == 'F304LH')
 
 materiali <- renderPrint({
-  print(ifelse(input$marca_1 == 'F304LO',
-               mean(tempo_usura_materiali$tempo_usura),
-               input$marca_1));
-  input$marca_2
+  print(
+    ifelse(input$marca_1 == 'F304LO',
+              mean(tempo_usura_LO$tempo_usura),
+               ifelse(input$marca_1 == 'F304L1',
+                       mean(tempo_usura_L1$tempo_usura),
+                        ifelse(input$marca_1 == 'F304LX',
+                                 mean(tempo_usura_LX$tempo_usura),
+                                 ifelse(input$marca_1 == 'F304LH',
+                                        tempo_usura_LH$tempo_usura,
+                                        imput$marca_1
+              )))));
+  ifelse(input$marca_2 == 'F304LO',
+              mean(tempo_usura_LO$tempo_usura),
+               ifelse(input$marca_2 == 'F304L1',
+                       mean(tempo_usura_L1$tempo_usura),
+                        ifelse(input$marca_2 == 'F304LX',
+                                 mean(tempo_usura_LX$tempo_usura),
+                                 ifelse(input$marca_2 == 'F304LH',
+                                        tempo_usura_LH$tempo_usura,
+                                        imput$marca_2
+              ))));
   })
 
 materiali
 
 ```
+
 
