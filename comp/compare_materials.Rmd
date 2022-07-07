@@ -54,52 +54,35 @@ dfr <- py$df
 lista_materiali <- unique(dfr$materiale)
 
 inputPanel(
-         selectInput("marca_1", label = 'scegli la marca 1', 
+         selectInput("marca_rif", label = 'scegli la marca di riferimento', 
                       choices = lista_materiali, selected = length(lista_materiali)),
 
-        selectInput("marca_2", label = 'scegli la marca 2', 
-                      choices = lista_materiali, selected = length(lista_materiali),multiple = TRUE)
+        selectInput("marca_1", label = 'scegli la marca 1', 
+                      choices = lista_materiali, selected = length(lista_materiali))#, multiple = TRUE)
 )
 
 ```
 
-```{r prova_stampa_materiali}
+```{r differenza_percentuale_usura}
 
 tempo_usura_materiali <- dfr %>% select(materiale, tempo_usura)
 
-tempo_usura_materiali <- tempo_usura_materiali %>% arrange(materiale)
+differenza_percentuale <- renderPrint({
 
-tempo_usura_LO <- subset(tempo_usura_materiali, materiale == 'F304LO')
-tempo_usura_L1 <- subset(tempo_usura_materiali, materiale == 'F304L1')
-tempo_usura_LX <- subset(tempo_usura_materiali, materiale == 'F304LX')
-tempo_usura_LH <- subset(tempo_usura_materiali, materiale == 'F304LH')
+    riferimento <- filter(tempo_usura_materiali, materiale == input$marca_rif)
+      media_rif <- mean(riferimento$tempo_usura)
+      print(media_rif);
+ 
+    confronto <- filter(tempo_usura_materiali, materiale == input$marca_1)
+      media_confronto <- mean(confronto$tempo_usura)
+      print(media_confronto);
 
-materiali <- renderPrint({
-  print(
-    ifelse(input$marca_1 == 'F304LO',
-              mean(tempo_usura_LO$tempo_usura),
-               ifelse(input$marca_1 == 'F304L1',
-                       mean(tempo_usura_L1$tempo_usura),
-                        ifelse(input$marca_1 == 'F304LX',
-                                 mean(tempo_usura_LX$tempo_usura),
-                                 ifelse(input$marca_1 == 'F304LH',
-                                        tempo_usura_LH$tempo_usura,
-                                        imput$marca_1
-              )))));
-  ifelse(input$marca_2 == 'F304LO',
-              mean(tempo_usura_LO$tempo_usura),
-               ifelse(input$marca_2 == 'F304L1',
-                       mean(tempo_usura_L1$tempo_usura),
-                        ifelse(input$marca_2 == 'F304LX',
-                                 mean(tempo_usura_LX$tempo_usura),
-                                 ifelse(input$marca_2 == 'F304LH',
-                                        tempo_usura_LH$tempo_usura,
-                                        imput$marca_2
-              ))));
-  })
+    diff_perc <- ((media_confronto - media_rif)/media_rif)*100
+      print(diff_perc)
+            
+})
 
-materiali
+differenza_percentuale
 
 ```
-
-
+`
